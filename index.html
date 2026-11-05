@@ -12,7 +12,7 @@
   --bg:#F4F5F8; --surface:#FFFFFF; --surface-2:#F0F2F6; --surface-glass:rgba(255,255,255,.72);
   --ink:#0B1220; --ink-2:#4A5568; --ink-3:#8A94A6; --line:rgba(15,23,42,.08); --line-2:rgba(15,23,42,.14);
   --accent:#1565E8; --accent-2:#7B3FE4; --accent-soft:#E7EFFD; --purple-soft:#F0E9FD;
-  --up:#0F7B4F; --down:#B4235A; --grid:rgba(15,23,42,.06);
+  --up:#0F7B4F; --down:#B4235A; --warn:#A86200; --glass:rgba(255,255,255,.58); --glass-line:rgba(255,255,255,.75); --glass-hi:rgba(255,255,255,.9); --grid:rgba(15,23,42,.06);
   --c0:#1565E8; --c1:#0E9AA7; --c2:#7B3FE4; --c3:#D27A1E; --c4:#C2409E;
   --seq0:#DCE8FD; --seq1:#9DBEF7; --seq2:#5B91EE; --seq3:#1F64DA; --seq4:#0B3C8C; --none:#E3E6EC;
   --shadow:0 1px 2px rgba(15,23,42,.04),0 8px 24px rgba(15,23,42,.06);
@@ -22,7 +22,7 @@
   --bg:#0A0C11; --surface:#14171E; --surface-2:#1B1F28; --surface-glass:rgba(20,23,30,.72);
   --ink:#F2F4F8; --ink-2:#AEB6C4; --ink-3:#6F7889; --line:rgba(255,255,255,.08); --line-2:rgba(255,255,255,.16);
   --accent:#3B7FF5; --accent-2:#8F5FF5; --accent-soft:rgba(59,127,245,.16); --purple-soft:rgba(143,95,245,.16);
-  --up:#3CCB8A; --down:#F06A9B; --grid:rgba(255,255,255,.06);
+  --up:#3CCB8A; --down:#F06A9B; --warn:#F0B44C; --glass:rgba(28,32,42,.55); --glass-line:rgba(255,255,255,.10); --glass-hi:rgba(255,255,255,.06); --grid:rgba(255,255,255,.06);
   --c0:#3B7FF5; --c1:#139DA8; --c2:#8F5FF5; --c3:#D07C22; --c4:#CC4D9A;
   --seq0:#1A2740; --seq1:#1F4790; --seq2:#2F6BD6; --seq3:#6A9CF5; --seq4:#B7D0FB; --none:#232833;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35); color-scheme:dark;
@@ -31,7 +31,7 @@
   --bg:#0A0C11; --surface:#14171E; --surface-2:#1B1F28; --surface-glass:rgba(20,23,30,.72);
   --ink:#F2F4F8; --ink-2:#AEB6C4; --ink-3:#6F7889; --line:rgba(255,255,255,.08); --line-2:rgba(255,255,255,.16);
   --accent:#3B7FF5; --accent-2:#8F5FF5; --accent-soft:rgba(59,127,245,.16); --purple-soft:rgba(143,95,245,.16);
-  --up:#3CCB8A; --down:#F06A9B; --grid:rgba(255,255,255,.06);
+  --up:#3CCB8A; --down:#F06A9B; --warn:#F0B44C; --glass:rgba(28,32,42,.55); --glass-line:rgba(255,255,255,.10); --glass-hi:rgba(255,255,255,.06); --grid:rgba(255,255,255,.06);
   --c0:#3B7FF5; --c1:#139DA8; --c2:#8F5FF5; --c3:#D07C22; --c4:#CC4D9A;
   --seq0:#1A2740; --seq1:#1F4790; --seq2:#2F6BD6; --seq3:#6A9CF5; --seq4:#B7D0FB; --none:#232833;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35); color-scheme:dark;
@@ -155,6 +155,68 @@ dialog::backdrop{background:rgba(8,12,20,.45);backdrop-filter:blur(6px)}
 footer{max-width:1600px;margin:0 auto;padding:0 clamp(16px,3vw,32px) 30px;color:var(--ink-3);font-size:12px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 kbd{font:600 11px ui-monospace,Menlo,monospace;background:var(--surface-2);border:1px solid var(--line-2);border-radius:5px;padding:1px 5px}
 
+/* Executive summary — glass */
+.stage{position:relative;border-radius:28px;padding:clamp(16px,2.4vw,28px);overflow:hidden;isolation:isolate;background:var(--surface-2);margin-bottom:18px}
+.stage::before{content:"";position:absolute;inset:-20%;z-index:-1;filter:blur(60px);opacity:.55;
+  background:radial-gradient(40% 50% at 12% 20%,var(--c0),transparent 70%),radial-gradient(35% 45% at 88% 15%,var(--accent-2),transparent 70%),radial-gradient(40% 50% at 70% 95%,var(--c1),transparent 70%),radial-gradient(30% 40% at 25% 90%,var(--c2),transparent 70%)}
+.glass{background:var(--glass);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border:1px solid var(--glass-line);border-radius:22px;box-shadow:inset 0 1px 0 var(--glass-hi),0 10px 30px rgba(15,23,42,.10);padding:18px;min-width:0}
+.hero{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px}
+@media (max-width:1000px){.hero{grid-template-columns:1fr}}
+.hero-main .eyebrow{font-size:12px;font-weight:650;color:var(--ink-2);text-transform:uppercase;letter-spacing:.06em}
+.hero-main .big{font-size:clamp(44px,6vw,76px);font-weight:750;letter-spacing:-.035em;line-height:1;margin:8px 0 10px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;font-size:12.5px;font-weight:650;background:var(--glass-hi);border:1px solid var(--glass-line);color:var(--ink-2)}
+.chip .up,.chip .down{font-weight:700}
+.minis{display:grid;grid-template-columns:1fr;gap:12px}
+.mini{display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;transition:transform .15s}
+.mini:hover{transform:translateY(-2px)}
+.mini .lab{font-size:12.5px;color:var(--ink-2);font-weight:600}
+.mini .v{font-size:clamp(24px,2.4vw,32px);font-weight:720;letter-spacing:-.02em}
+.mini .s{font-size:12px;color:var(--ink-3)}
+.mini .ic{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;flex:none;color:#fff}
+.mini .ic svg,.ins .ic svg{width:22px;height:22px}
+.ins-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:16px}
+@media (max-width:1000px){.ins-row{grid-template-columns:1fr}}
+.ins{cursor:pointer;display:flex;flex-direction:column;gap:8px;transition:transform .15s}
+.ins:hover{transform:translateY(-3px)}
+.ins .ic{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;color:#fff}
+.ins .k{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3)}
+.ins h4{margin:0;font-size:17px;letter-spacing:-.01em;line-height:1.3}
+.ins p{margin:0;color:var(--ink-2);font-size:13.5px}
+.ins .more{margin-top:auto;font-size:12.5px;font-weight:650;color:var(--accent)}
+.health{display:flex;flex-direction:column}
+.hrow{display:grid;grid-template-columns:minmax(120px,1.3fr) 90px minmax(80px,2fr) 110px;gap:14px;align-items:center;padding:12px 6px;border-bottom:1px solid var(--line);cursor:pointer;border-radius:10px}
+.hrow:hover{background:var(--surface-2)}
+.hrow:last-child{border-bottom:0}
+.hrow .nm{display:flex;gap:10px;align-items:center;font-weight:650}
+.hrow .rv{font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+.gbar{position:relative;height:8px;border-radius:4px;background:var(--line)}
+.gbar span{position:absolute;left:0;top:0;bottom:0;border-radius:4px}
+.gbar i{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink-3);border-radius:1px}
+.gtxt{font-size:11.5px;color:var(--ink-3);margin-top:4px;font-variant-numeric:tabular-nums}
+.status{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;justify-self:end}
+.status.ok{color:var(--up)} .status.watch{color:var(--warn)}
+@media (max-width:640px){.hrow{grid-template-columns:1fr auto;}.hrow .gcell{grid-column:1/-1}}
+.list{display:flex;flex-direction:column;gap:2px}
+.li{display:flex;align-items:center;gap:12px;padding:10px 6px;border-radius:10px;cursor:pointer}
+.li:hover{background:var(--surface-2)}
+.li .rank{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-size:12px;font-weight:700;color:#fff;flex:none}
+.li .t{flex:1;min-width:0}
+.li .t b{display:block;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.li .t span{font-size:12px;color:var(--ink-3)}
+.li .r{text-align:right;font-weight:700;font-variant-numeric:tabular-nums;font-size:13.5px}
+.li .r span{display:block;font-size:11.5px;color:var(--ink-3);font-weight:600}
+.pipe{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:6px 0 14px}
+.pipe div{background:var(--surface-2);border-radius:14px;padding:12px;text-align:center;cursor:pointer;position:relative}
+.pipe div:hover{background:var(--line-2)}
+.pipe b{display:block;font-size:26px;letter-spacing:-.02em}
+.pipe span{font-size:11.5px;color:var(--ink-2);font-weight:600}
+.pipe div:not(:last-child)::after{content:"›";position:absolute;right:-8px;top:50%;transform:translateY(-50%);color:var(--ink-3);font-size:16px}
+.tagline{display:flex;gap:10px;flex-wrap:wrap}
+.tagline div{flex:1;min-width:120px;background:var(--surface-2);border-radius:12px;padding:10px 12px}
+.tagline b{display:block;font-size:18px}
+.tagline span{font-size:11.5px;color:var(--ink-3);font-weight:600}
+
 /* Present mode */
 .pnav{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:40;display:none;align-items:center;gap:10px;background:var(--surface-glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:999px;padding:6px 8px}
 .pnav button{border:0;background:transparent;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:16px}
@@ -195,6 +257,41 @@ section.view{animation:fade .35s ease}
   <div class="crumbs" id="crumbs"></div>
   <h2 class="headline" id="headline"></h2>
   <p class="sub" id="sub"></p>
+
+  <!-- 0 EXECUTIVE SUMMARY -->
+  <section class="view" id="v-exec" hidden>
+    <div class="stage">
+      <div class="hero">
+        <div class="glass hero-main">
+          <div class="eyebrow" id="xEyebrow"></div>
+          <div class="big num" id="xBig"></div>
+          <div class="chips" id="xChips"></div>
+          <div class="chart short" id="cExec" style="margin-top:6px"></div>
+        </div>
+        <div class="minis" id="xMinis"></div>
+      </div>
+      <div class="ins-row" id="xIns"></div>
+    </div>
+    <div class="grid">
+      <div class="card s7">
+        <div class="card-head"><div><h3>Portfolio health</h3><p class="hint">Growth vs. market growth (tick) · status vs. plan · click a row to zoom in</p></div></div>
+        <div class="health" id="xHealth"></div>
+      </div>
+      <div class="card s5">
+        <div class="card-head"><div><h3>Where we will win</h3><p class="hint">Top focus-score bets · click for product profile</p></div></div>
+        <div class="list" id="xWin"></div>
+      </div>
+      <div class="card s6">
+        <div class="card-head"><div><h3>Innovation pipeline</h3><p class="hint">For R&amp;D / technology leadership · click a stage</p></div></div>
+        <div class="pipe" id="xPipe"></div>
+        <div class="tagline" id="xTech"></div>
+      </div>
+      <div class="card s6">
+        <div class="card-head"><div><h3>Decisions needed</h3><p class="hint">Projects awaiting portfolio review · click to open</p></div></div>
+        <div class="list" id="xDec"></div>
+      </div>
+    </div>
+  </section>
 
   <!-- 1 OVERVIEW -->
   <section class="view" id="v-overview" hidden>
@@ -301,7 +398,7 @@ section.view{animation:fade .35s ease}
 
 <footer>
   <span>Prototype · all figures are illustrative dummy data · $ in USD</span>
-  <span>Shortcuts: <kbd>←</kbd> <kbd>→</kbd> switch views · <kbd>P</kbd> present · <kbd>Esc</kbd> exit · <kbd>Backspace</kbd> zoom out</span>
+  <span>Shortcuts: <kbd>←</kbd> <kbd>→</kbd> or <kbd>1</kbd>–<kbd>6</kbd> switch views · <kbd>P</kbd> present · <kbd>Esc</kbd> exit · <kbd>Backspace</kbd> zoom out</span>
 </footer>
 
 <div class="pnav" id="pnav"><button id="pPrev" aria-label="Previous">‹</button><div class="pdots" id="pdots"></div><button id="pNext" aria-label="Next">›</button><button id="pExit" aria-label="Exit presentation" title="Exit">✕</button></div>
@@ -405,8 +502,8 @@ const MONTHLY = PORT.map(p => MONTHS.map((m, i) => { const s = Math.round((2 + r
 /* =========================================================
    2. STATE & HELPERS
    ========================================================= */
-const state = {tab:'overview', y:4, r:null, p:null, u:null, tm:'entity', prodSort:['rev','desc'], regSort:['rev','desc'], focusSort:['score','desc'], projSort:['npv','desc'], stage:null};
-const TABS = [['overview','Executive Overview'],['portfolio','Portfolio & Therapies'],['geo','Geography'],['markets','Markets & Focus'],['intake','Project Intake']];
+const state = {tab:'exec', y:4, r:null, p:null, u:null, tm:'entity', prodSort:['rev','desc'], regSort:['rev','desc'], focusSort:['score','desc'], projSort:['npv','desc'], stage:null};
+const TABS = [['exec','Executive Summary'],['overview','Performance Overview'],['portfolio','Portfolio & Therapies'],['geo','Geography'],['markets','Markets & Focus'],['intake','Project Intake']];
 
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const T = () => ({ink:css('--ink'), ink2:css('--ink-2'), ink3:css('--ink-3'), line:css('--line'), line2:css('--line-2'), grid:css('--grid'), surface:css('--surface'), surface2:css('--surface-2'), accent:css('--accent'), accent2:css('--accent-2'), up:css('--up'), down:css('--down'), none:css('--none'), pal:[0,1,2,3,4].map(i => css('--c' + i)), seq:[0,1,2,3,4].map(i => css('--seq' + i))});
@@ -567,6 +664,105 @@ function renderOverview() {
   const contrib = ents.map(e => ({...e, d: e.m.rev - e.m.prev})).sort((a, b) => b.d - a.d)[0];
   setHeadline(`${esc(scopeName())} delivered <em>${fmt$(m.rev)}</em> in ${YEARS[y]}, ${fmtD(m.yoy)} year over year.`,
     y > 0 ? `<b>${esc(contrib.name)}</b> contributed the most growth (${fmt$(contrib.d)} added). We hold ${fmtP(m.share)} of a ${fmt$(m.tam)} addressable market, leaving <b>${fmt$(m.white)}</b> of white space. Revenue is ${fmtD(m.rev / m.plan - 1)} versus plan.` : 'Baseline year. Select a later year to see growth.');
+}
+
+const ICON = {
+  growth:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>',
+  share:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 3a9 9 0 1 0 9 9h-9z"/><path d="M15 3.5A9 9 0 0 1 20.5 9H15z"/></svg>',
+  target:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>',
+  rocket:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15c-1.5 1.5-2 5-2 5s3.5-.5 5-2"/><path d="M9 15l-3-3c1-4 4-8 11-9 0 7-5 10-9 11z"/><circle cx="15" cy="9" r="1.5"/></svg>',
+  alert:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 3l10 18H2z" stroke-linejoin="round"/><path d="M12 10v5M12 18h.01"/></svg>',
+  globe:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>',
+};
+const STATUS = {ok:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg>', watch:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 3l10 18H2z" stroke-linejoin="round"/><path d="M12 10v4M12 17.5h.01"/></svg>'};
+const go = (tab, fn) => { if (fn) fn(); state.tab = tab; render(); window.scrollTo({top:0, behavior:'smooth'}); };
+
+function renderExec() {
+  const t = T(), y = state.y, m = metric({y}), mPrevTam = agg(sel({y:y - 1})).tam, mkt = mPrevTam ? m.tam / mPrevTam - 1 : 0;
+  const vsPlan = m.rev / m.plan - 1, ps = projectsFiltered(), npv = ps.reduce((a, p) => a + p.npv, 0);
+  document.getElementById('xEyebrow').textContent = `${YEARS[y]} revenue · ${scopeName()}`;
+  document.getElementById('xBig').textContent = fmt$(m.rev);
+  document.getElementById('xChips').innerHTML = [
+    `<span class="${cls(m.yoy)}">${fmtD(m.yoy)}</span> vs last year`,
+    `<span class="${cls(vsPlan)}">${fmtD(vsPlan)}</span> vs plan`,
+    `Market growing ${fmtD(mkt)}`,
+  ].map(c => `<span class="chip">${c}</span>`).join('');
+
+  // simple trend line: actual solid, forecast dashed
+  const tot = YEARS.map((_, i) => agg(sel({y:i})).rev);
+  const c = chart('cExec');
+  c.setOption({...base(), grid:{left:4, right:12, top:16, bottom:4, containLabel:true},
+    tooltip:{...base().tooltip, trigger:'axis', axisPointer:{type:'line', lineStyle:{color:t.line2}}, formatter: ps => { const p = ps.find(q => q.value != null); return `<b>${p.axisValue}${p.dataIndex >= ACTUAL ? ' (forecast)' : ''}</b>` + ttRow(t.accent, 'Revenue', fmt$(p.value)); }},
+    xAxis:{type:'category', data:YEARS, boundaryGap:false, ...axisCommon(t), axisLabel:{color:t.ink2, fontSize:11}},
+    yAxis:{type:'value', ...axisCommon(t), scale:true, splitNumber:3, axisLabel:{color:t.ink3, fontSize:11, formatter:v => fmt$(v)}},
+    series:[
+      {type:'line', smooth:.35, data:tot.map((v, i) => i < ACTUAL ? v : null), symbol:'circle', symbolSize:8, showSymbol:false, lineStyle:{width:3, color:t.accent}, itemStyle:{color:t.accent, borderColor:t.surface, borderWidth:2},
+        areaStyle:{color:new echarts.graphic.LinearGradient(0, 0, 0, 1, [{offset:0, color:t.accent + '40'}, {offset:1, color:t.accent + '00'}])},
+        markPoint:{symbol:'circle', symbolSize:10, itemStyle:{color:t.accent, borderColor:t.surface, borderWidth:3}, label:{show:false}, data:[{coord:[y, tot[y]]}]}},
+      {type:'line', smooth:.35, data:tot.map((v, i) => i >= ACTUAL - 1 ? v : null), symbol:'circle', symbolSize:8, showSymbol:false, lineStyle:{width:3, type:[6, 5], color:t.accent2}, itemStyle:{color:t.accent2},
+        endLabel:{show:true, formatter:'Forecast', color:t.ink3, fontSize:11, offset:[-56, -14]}}]}, true);
+
+  // mini KPIs
+  const minis = [
+    {ic:ICON.share, col:`linear-gradient(135deg,${t.pal[0]},${t.pal[1]})`, lab:'Market share', v:fmtP(m.share), s:`of a ${fmt$(m.tam)} market`, go:() => go('markets')},
+    {ic:ICON.target, col:`linear-gradient(135deg,${t.pal[2]},${t.pal[4]})`, lab:'Untapped opportunity', v:fmt$(m.white), s:`${fmtP(1 - m.share, 0)} of market not yet ours`, go:() => go('geo')},
+    {ic:ICON.rocket, col:`linear-gradient(135deg,${t.pal[0]},${t.pal[2]})`, lab:'Innovation pipeline', v:fmt$(npv), s:`NPV across ${ps.length} projects`, go:() => go('intake')},
+  ];
+  const xm = document.getElementById('xMinis');
+  xm.innerHTML = minis.map((k, i) => `<div class="glass mini" data-i="${i}" role="button" tabindex="0"><div><div class="lab">${k.lab}</div><div class="v num">${k.v}</div><div class="s">${k.s}</div></div><div class="ic" style="background:${k.col}">${k.ic}</div></div>`).join('');
+  xm.onclick = e => { const d = e.target.closest('.mini'); if (d) minis[+d.dataset.i].go(); };
+
+  // three things to know
+  const prods = productRows(y), fast = prods.slice().sort((a, b) => (b.rev - b.prev) - (a.rev - a.prev))[0];
+  const ports = PORT.filter(p => !state.p || p.id === state.p).map(p => ({p, ...metric({p:p.id, y, u:null}), mk: agg(sel({p:p.id, y, u:null})).tam / (agg(sel({p:p.id, y:y - 1, u:null})).tam || 1) - 1}));
+  const lag = prods.filter(r => r.rev > 300).sort((a, b) => (a.yoy - a.x.tamg) - (b.yoy - b.x.tamg))[0];
+  const regs = REG.map(r => ({r, ...metric({r:r.id, y})}));
+  const regFast = regs.slice().sort((a, b) => b.yoy - a.yoy)[0];
+  const ins = [
+    {k:'Growth engine', ic:ICON.growth, col:t.pal[0], h:`${fast.x.name} added ${fmt$(fast.rev - fast.prev)} this year`, p:`Growing ${fmtD(fast.yoy, 0)} in a market expanding ${fmtP(fast.x.tamg, 0)} a year — our biggest single growth driver.`, more:'Open product profile', go:() => openProduct(fast.x.id)},
+    {k:'Watch item', ic:ICON.alert, col:t.pal[3], h:`${lag.x.name} is losing ground`, p:`Growing ${fmtD(lag.yoy, 1)} while its market grows ${fmtP(lag.x.tamg, 0)}. Share is slipping on a ${fmt$(lag.rev)} business.`, more:'See portfolio map', go:() => go('portfolio', () => { state.p = lag.x.p; state.u = null; })},
+    {k:'Opportunity', ic:ICON.globe, col:t.pal[2], h:`${regFast.r.name} is our fastest-growing region`, p:`${fmtD(regFast.yoy)} growth with only ${fmtP(regFast.pen)} patient penetration and ${fmt$(regFast.white)} of untapped market.`, more:'See geography', go:() => go('geo', () => { state.r = regFast.r.id; })},
+  ];
+  const xi = document.getElementById('xIns');
+  xi.innerHTML = ins.map((k, i) => `<div class="glass ins" data-i="${i}" role="button" tabindex="0"><div style="display:flex;gap:10px;align-items:center"><div class="ic" style="background:${k.col}">${k.ic}</div><span class="k">${k.k}</span></div><h4>${esc(k.h)}</h4><p>${esc(k.p)}</p><span class="more">${k.more} →</span></div>`).join('');
+  xi.onclick = e => { const d = e.target.closest('.ins'); if (d) ins[+d.dataset.i].go(); };
+
+  // portfolio health
+  const ch = children().filter(c => c.key !== 'k' || true);
+  const rows = ch.map(c => { const mm = metric({[c.key]:c.id, y}); const prevT = agg(sel({[c.key]:c.id, y:y - 1})).tam; return {...c, m:mm, mk: prevT ? mm.tam / prevT - 1 : 0, vp: mm.rev / mm.plan - 1}; }).sort((a, b) => b.m.rev - a.m.rev);
+  const gmax = Math.max(.2, ...rows.map(r => Math.max(r.m.yoy, r.mk)));
+  document.getElementById('xHealth').innerHTML = rows.map((r, i) => { const ok = r.vp >= -.01 && r.m.yoy >= r.mk - .01;
+    return `<div class="hrow" data-i="${i}"><div class="nm"><i class="dot" style="background:${r.color}"></i><span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(r.name)}</span></div>
+    <div class="rv">${fmt$(r.m.rev)}</div>
+    <div class="gcell"><div class="gbar"><span style="width:${Math.max(0, r.m.yoy) / gmax * 100}%;background:${r.color}"></span><i style="left:${Math.max(0, r.mk) / gmax * 100}%" title="Market growth"></i></div><div class="gtxt">Us ${fmtD(r.m.yoy)} · market ${fmtD(r.mk)}</div></div>
+    <span class="status ${ok ? 'ok' : 'watch'}">${ok ? STATUS.ok + 'On track' : STATUS.watch + 'Watch'}</span></div>`; }).join('');
+  document.getElementById('xHealth').onclick = e => { const d = e.target.closest('.hrow'); if (!d) return; const r = rows[+d.dataset.i]; if (r.key === 'k') openProduct(r.id); else drill(r.key, r.id); };
+
+  // where we will win
+  const win = focusRows(y).sort((a, b) => b.score - a.score).slice(0, 5);
+  document.getElementById('xWin').innerHTML = win.map((r, i) => `<div class="li" data-i="${i}"><div class="rank" style="background:${prodColor(r.x)}">${i + 1}</div><div class="t"><b>${esc(r.x.name)}</b><span>${byId(r.x.p).name} · market ${fmtD(r.x.tamg, 0)}/yr</span></div><div class="r">+${fmt$(r.opp)}<span>upside to FY28</span></div></div>`).join('');
+  document.getElementById('xWin').onclick = e => { const d = e.target.closest('.li'); if (d) openProduct(win[+d.dataset.i].x.id); };
+
+  // innovation pipeline (CTO)
+  const grp = [['Discovery', [0, 1, 2]], ['Review', [3, 4]], ['Development', [5]], ['Launch', [6]]];
+  document.getElementById('xPipe').innerHTML = grp.map((g, i) => `<div data-i="${i}"><b class="num">${ps.filter(p => g[1].includes(p.si)).length}</b><span>${g[0]}</span></div>`).join('');
+  document.getElementById('xPipe').onclick = e => { const d = e.target.closest('[data-i]'); if (d) go('intake', () => { state.stage = grp[+d.dataset.i][1][0]; }); };
+  const digital = ps.filter(p => /AI|digital|app|remote|connected|analytics|monitor|robot|algorithm|navigation|sensing|closed-loop/i.test(p.name));
+  const launch12 = ps.filter(p => p.si >= 5).reduce((a, p) => a + p.peak, 0);
+  document.getElementById('xTech').innerHTML = [
+    [digital.length + ' of ' + ps.length, 'AI, digital & robotics projects'],
+    [fmt$(launch12), 'Peak sales of near-launch projects'],
+    [Math.round(ps.reduce((a, p) => a + p.fit, 0) / (ps.length || 1)) + '/100', 'Avg. strategic fit'],
+  ].map(x => `<div><b class="num">${x[0]}</b><span>${x[1]}</span></div>`).join('');
+
+  // decisions needed
+  const dec = ps.filter(p => p.si === 3 || p.si === 2).sort((a, b) => b.si - a.si || b.npv - a.npv).slice(0, 5);
+  document.getElementById('xDec').innerHTML = dec.length ? dec.map((p, i) => `<div class="li" data-i="${i}"><div class="rank" style="background:${t.pal[PORT.findIndex(x => x.id === p.p)]}">${STAGES[p.si][0]}</div><div class="t"><b>${esc(p.name)}</b><span>${p.stage} · ${byId(p.p).name} · ${regShort(p.r)} · ${p.days}d in stage</span></div><div class="r">${fmt$(p.npv)}<span>NPV · ${p.risk} risk</span></div></div>`).join('') : '<p class="hint">No projects awaiting a decision for this filter.</p>';
+  document.getElementById('xDec').onclick = e => { const d = e.target.closest('.li'); if (d) openProject(dec[+d.dataset.i]); };
+
+  const ahead = m.yoy >= mkt;
+  setHeadline(`${esc(scopeName())} at a glance: <em>${fmt$(m.rev)}</em>, growing ${fmtD(m.yoy)} — ${ahead ? 'ahead of' : 'slightly behind'} the market.`,
+    `Three things to know, health by ${childLabel().toLowerCase()}, where to invest and what needs a decision. Everything is clickable.`);
 }
 
 function productRows(y) {
@@ -850,7 +1046,7 @@ function openProject(p) {
    ========================================================= */
 function render() {
   renderChrome();
-  ({overview:renderOverview, portfolio:renderPortfolio, geo:renderGeo, markets:renderMarkets, intake:renderIntake})[state.tab]();
+  ({exec:renderExec, overview:renderOverview, portfolio:renderPortfolio, geo:renderGeo, markets:renderMarkets, intake:renderIntake})[state.tab]();
   try { location.hash = state.tab; } catch (e) {}
 }
 function setTheme(th) {
@@ -880,7 +1076,7 @@ document.addEventListener('keydown', e => {
   else if (e.key === 'Backspace') { zoomOut(); e.preventDefault(); }
   else if (e.key.toLowerCase() === 'p') present(!document.body.classList.contains('presenting'));
   else if (e.key === 'Escape') present(false);
-  else if (/^[1-5]$/.test(e.key)) setTab(TABS[+e.key - 1][0]);
+  else if (/^[1-6]$/.test(e.key)) setTab(TABS[+e.key - 1][0]);
 });
 
 try { const th = localStorage.getItem('pi-theme'); if (th) document.documentElement.setAttribute('data-theme', th); } catch (e) {}
