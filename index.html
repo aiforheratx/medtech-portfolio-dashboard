@@ -1,0 +1,888 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Portfolio Intelligence</title>
+<meta name="description" content="Interactive medical-device portfolio dashboard (prototype, illustrative data).">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%231565E8'/%3E%3Cstop offset='1' stop-color='%237B3FE4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='url(%23g)'/%3E%3Cpath d='M6 17h5l2.5-6 4 11 3-8 1.5 3H26' fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+<style>
+:root{
+  --bg:#F4F5F8; --surface:#FFFFFF; --surface-2:#F0F2F6; --surface-glass:rgba(255,255,255,.72);
+  --ink:#0B1220; --ink-2:#4A5568; --ink-3:#8A94A6; --line:rgba(15,23,42,.08); --line-2:rgba(15,23,42,.14);
+  --accent:#1565E8; --accent-2:#7B3FE4; --accent-soft:#E7EFFD; --purple-soft:#F0E9FD;
+  --up:#0F7B4F; --down:#B4235A; --grid:rgba(15,23,42,.06);
+  --c0:#1565E8; --c1:#0E9AA7; --c2:#7B3FE4; --c3:#D27A1E; --c4:#C2409E;
+  --seq0:#DCE8FD; --seq1:#9DBEF7; --seq2:#5B91EE; --seq3:#1F64DA; --seq4:#0B3C8C; --none:#E3E6EC;
+  --shadow:0 1px 2px rgba(15,23,42,.04),0 8px 24px rgba(15,23,42,.06);
+  --radius:18px; color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0A0C11; --surface:#14171E; --surface-2:#1B1F28; --surface-glass:rgba(20,23,30,.72);
+  --ink:#F2F4F8; --ink-2:#AEB6C4; --ink-3:#6F7889; --line:rgba(255,255,255,.08); --line-2:rgba(255,255,255,.16);
+  --accent:#3B7FF5; --accent-2:#8F5FF5; --accent-soft:rgba(59,127,245,.16); --purple-soft:rgba(143,95,245,.16);
+  --up:#3CCB8A; --down:#F06A9B; --grid:rgba(255,255,255,.06);
+  --c0:#3B7FF5; --c1:#139DA8; --c2:#8F5FF5; --c3:#D07C22; --c4:#CC4D9A;
+  --seq0:#1A2740; --seq1:#1F4790; --seq2:#2F6BD6; --seq3:#6A9CF5; --seq4:#B7D0FB; --none:#232833;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35); color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0A0C11; --surface:#14171E; --surface-2:#1B1F28; --surface-glass:rgba(20,23,30,.72);
+  --ink:#F2F4F8; --ink-2:#AEB6C4; --ink-3:#6F7889; --line:rgba(255,255,255,.08); --line-2:rgba(255,255,255,.16);
+  --accent:#3B7FF5; --accent-2:#8F5FF5; --accent-soft:rgba(59,127,245,.16); --purple-soft:rgba(143,95,245,.16);
+  --up:#3CCB8A; --down:#F06A9B; --grid:rgba(255,255,255,.06);
+  --c0:#3B7FF5; --c1:#139DA8; --c2:#8F5FF5; --c3:#D07C22; --c4:#CC4D9A;
+  --seq0:#1A2740; --seq1:#1F4790; --seq2:#2F6BD6; --seq3:#6A9CF5; --seq4:#B7D0FB; --none:#232833;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35); color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:14px/1.45 -apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+button,select,input{font:inherit;color:inherit}
+.num{font-variant-numeric:tabular-nums}
+
+/* Header */
+header.top{position:sticky;top:0;z-index:20;background:var(--surface-glass);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--line)}
+.bar{max-width:1600px;margin:0 auto;padding:12px clamp(16px,3vw,32px);display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;min-width:0;margin-right:auto}
+.logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--c0),var(--accent-2));display:grid;place-items:center;flex:none;box-shadow:0 4px 14px rgba(21,101,232,.3)}
+.brand h1{font-size:17px;font-weight:650;letter-spacing:-.01em;margin:0;white-space:nowrap}
+.brand p{margin:0;font-size:12px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.seg{display:inline-flex;background:var(--surface-2);border-radius:10px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;padding:5px 10px;border-radius:8px;font-size:12.5px;font-weight:550;color:var(--ink-2);cursor:pointer;white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.select{appearance:none;border:0;background:var(--surface-2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238A94A6' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 10px center;padding:7px 28px 7px 12px;border-radius:10px;font-size:12.5px;font-weight:550;cursor:pointer}
+.btn{border:0;background:var(--surface-2);padding:7px 12px;border-radius:10px;font-size:12.5px;font-weight:600;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.btn:hover{background:var(--line-2)}
+.btn.primary{background:linear-gradient(135deg,var(--c0),var(--accent-2));color:#fff}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn svg{width:14px;height:14px}
+
+nav.tabs{max-width:1600px;margin:0 auto;padding:0 clamp(16px,3vw,32px) 10px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs button{border:0;background:transparent;padding:7px 14px;border-radius:999px;font-weight:600;font-size:13px;color:var(--ink-2);cursor:pointer;white-space:nowrap;display:flex;gap:7px;align-items:center}
+nav.tabs button .n{font-size:11px;color:var(--ink-3);font-weight:600}
+nav.tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg)}
+nav.tabs button[aria-selected="true"] .n{color:var(--bg);opacity:.6}
+
+main{max-width:1600px;margin:0 auto;padding:18px clamp(16px,3vw,32px) 40px}
+.crumbs{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:13px;margin-bottom:6px;color:var(--ink-3)}
+.crumbs button{border:0;background:var(--surface-2);border-radius:999px;padding:3px 10px;cursor:pointer;font-weight:600;font-size:12.5px;color:var(--ink-2)}
+.crumbs button.cur{background:var(--accent-soft);color:var(--accent)}
+.crumbs .chip-x{margin-left:4px;opacity:.6}
+.headline{font-size:clamp(20px,2.2vw,30px);font-weight:700;letter-spacing:-.02em;line-height:1.2;margin:4px 0 4px;max-width:1100px;text-wrap:balance}
+.headline em{font-style:normal;background:linear-gradient(90deg,var(--c0),var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--ink-2);margin:0 0 18px;font-size:14px;max-width:1000px}
+
+.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}
+.card{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 18px 14px;min-width:0;border:1px solid var(--line)}
+.card h3{margin:0;font-size:15px;font-weight:650;letter-spacing:-.01em}
+.card .hint{font-size:12px;color:var(--ink-3);margin:2px 0 10px}
+.card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}
+.s12{grid-column:span 12}.s8{grid-column:span 8}.s7{grid-column:span 7}.s6{grid-column:span 6}.s5{grid-column:span 5}.s4{grid-column:span 4}
+@media (max-width:1100px){.s8,.s7,.s5,.s4{grid-column:span 12}.s6{grid-column:span 12}}
+.chart{width:100%;height:clamp(260px,36vh,440px)}
+.chart.tall{height:clamp(320px,52vh,620px)}
+.chart.short{height:clamp(220px,28vh,320px)}
+
+/* KPIs */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px;margin-bottom:16px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 16px 48px;position:relative;overflow:hidden}
+.kpi .lab{font-size:12px;color:var(--ink-2);font-weight:600;display:flex;justify-content:space-between;gap:6px}
+.kpi .val{font-size:clamp(24px,2.2vw,32px);font-weight:700;letter-spacing:-.02em;margin:6px 0 2px}
+.kpi .delta{font-size:12px;font-weight:600;color:var(--ink-3)}
+.up{color:var(--up)} .down{color:var(--down)}
+.kpi svg.spark{position:absolute;right:12px;bottom:12px;width:76px;height:30px;color:var(--accent);opacity:.9}
+.info{width:15px;height:15px;border-radius:50%;border:1px solid var(--line-2);font-size:10px;display:inline-grid;place-items:center;color:var(--ink-3);cursor:help;flex:none}
+
+/* Entity cards */
+.ents{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.ent{border:1px solid var(--line);background:var(--surface-2);border-radius:14px;padding:14px;cursor:pointer;text-align:left;transition:transform .15s ease,box-shadow .15s ease,border-color .15s;position:relative}
+.ent:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:var(--line-2)}
+.ent .nm{display:flex;align-items:center;gap:8px;font-weight:650;font-size:13.5px}
+.dot{width:10px;height:10px;border-radius:3px;flex:none}
+.ent .rv{font-size:22px;font-weight:700;letter-spacing:-.02em;margin:8px 0 2px}
+.ent .meta{display:flex;gap:12px;font-size:12px;color:var(--ink-2);flex-wrap:wrap}
+.ent .go{position:absolute;right:12px;top:12px;font-size:12px;color:var(--ink-3)}
+.ent svg.spark{width:100%;height:34px;margin-top:8px}
+.bar-mini{height:4px;border-radius:2px;background:var(--line);margin-top:10px;overflow:hidden}
+.bar-mini span{display:block;height:100%;border-radius:2px}
+
+/* Tables */
+.tbl-wrap{overflow:auto;max-height:520px;border-radius:12px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{position:sticky;top:0;background:var(--surface);text-align:right;font-weight:600;color:var(--ink-3);font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;padding:8px 10px;border-bottom:1px solid var(--line-2);cursor:pointer;white-space:nowrap;user-select:none}
+th:first-child,td:first-child{text-align:left}
+th.l,td.l{text-align:left}
+td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+tbody tr{cursor:pointer}
+tbody tr:hover td{background:var(--surface-2)}
+th[data-dir="asc"]::after{content:" ↑"} th[data-dir="desc"]::after{content:" ↓"}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:2px 9px;border-radius:999px;font-size:11.5px;font-weight:650;background:var(--surface-2);color:var(--ink-2)}
+.pill.invest{background:var(--accent-soft);color:var(--accent)}
+.pill.grow{background:var(--purple-soft);color:var(--accent-2)}
+.score{display:inline-flex;align-items:center;gap:8px}
+.score i{display:block;width:60px;height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.score i b{display:block;height:100%;background:linear-gradient(90deg,var(--c0),var(--accent-2));border-radius:3px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.search{border:0;background:var(--surface-2);border-radius:10px;padding:7px 12px;font-size:12.5px;min-width:0;width:200px;max-width:100%}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--ink-2);margin:4px 0 6px}
+.legend span{display:inline-flex;gap:6px;align-items:center}
+.stages{display:flex;gap:4px;margin:14px 0}
+.stages div{flex:1;height:6px;border-radius:3px;background:var(--line)}
+.stages div.done{background:linear-gradient(90deg,var(--c0),var(--accent-2))}
+.stagelbl{display:flex;justify-content:space-between;font-size:10.5px;color:var(--ink-3);gap:4px}
+.stagelbl span{flex:1;text-align:center}
+
+/* Modal */
+dialog{border:0;border-radius:22px;padding:0;background:var(--surface);color:var(--ink);width:min(980px,calc(100vw - 32px));max-height:calc(100vh - 48px);box-shadow:0 30px 80px rgba(0,0,0,.35)}
+dialog::backdrop{background:rgba(8,12,20,.45);backdrop-filter:blur(6px)}
+.m-head{padding:20px 22px 6px;display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.m-head h2{margin:0;font-size:22px;letter-spacing:-.02em}
+.m-head p{margin:2px 0 0;color:var(--ink-3);font-size:13px}
+.m-body{padding:8px 22px 22px;overflow:auto;max-height:calc(100vh - 140px)}
+.close{border:0;background:var(--surface-2);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:16px;flex:none}
+.mk{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:8px 0 14px}
+.mk div{background:var(--surface-2);border-radius:12px;padding:10px 12px}
+.mk b{display:block;font-size:19px;letter-spacing:-.01em}
+.mk span{font-size:11.5px;color:var(--ink-3);font-weight:600}
+
+footer{max-width:1600px;margin:0 auto;padding:0 clamp(16px,3vw,32px) 30px;color:var(--ink-3);font-size:12px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+kbd{font:600 11px ui-monospace,Menlo,monospace;background:var(--surface-2);border:1px solid var(--line-2);border-radius:5px;padding:1px 5px}
+
+/* Present mode */
+.pnav{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:40;display:none;align-items:center;gap:10px;background:var(--surface-glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:999px;padding:6px 8px}
+.pnav button{border:0;background:transparent;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:16px}
+.pnav button:hover{background:var(--surface-2)}
+.pdots{display:flex;gap:6px}
+.pdots i{width:7px;height:7px;border-radius:50%;background:var(--line-2);cursor:pointer}
+.pdots i.on{background:var(--accent);width:20px;border-radius:4px}
+body.presenting .pnav{display:flex}
+body.presenting footer,body.presenting .brand p{display:none}
+body.presenting main{padding-bottom:90px}
+body.presenting .headline{font-size:clamp(24px,2.8vw,40px)}
+body.presenting .chart{height:clamp(300px,44vh,560px)}
+section.view{animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (max-width:640px){.brand h1{font-size:15px}.controls{width:100%}.seg button{padding:5px 8px}.search{width:100%}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="bar">
+    <div class="brand">
+      <div class="logo" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 32 32"><path d="M3 17h6l3-7 5 13 3.5-9 2 4H29" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div style="min-width:0"><h1>Portfolio Intelligence</h1><p>Medical Devices · All products &amp; therapies · Global</p></div>
+    </div>
+    <div class="controls">
+      <div class="seg" id="yearSeg" role="group" aria-label="Fiscal year"></div>
+      <select class="select" id="regionSel" aria-label="Region"></select>
+      <button class="btn" id="themeBtn" title="Toggle light/dark" aria-label="Toggle theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+      <button class="btn primary" id="presentBtn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Present</button>
+    </div>
+  </div>
+  <nav class="tabs" id="tabs" role="tablist"></nav>
+</header>
+
+<main>
+  <div class="crumbs" id="crumbs"></div>
+  <h2 class="headline" id="headline"></h2>
+  <p class="sub" id="sub"></p>
+
+  <!-- 1 OVERVIEW -->
+  <section class="view" id="v-overview" hidden>
+    <div class="kpis" id="kpis"></div>
+    <div class="grid">
+      <div class="card s12">
+        <div class="card-head"><div><h3 id="entTitle">Portfolios</h3><p class="hint">Click any card to zoom in</p></div></div>
+        <div class="ents" id="ents"></div>
+      </div>
+      <div class="card s8">
+        <div class="card-head"><div><h3>Revenue trend &amp; forecast</h3><p class="hint">$ revenue by year · FY27–FY28 forecast shown lighter · click a bar segment to drill</p></div></div>
+        <div id="legTrend" class="legend"></div>
+        <div class="chart" id="cTrend"></div>
+      </div>
+      <div class="card s4">
+        <div class="card-head"><div><h3>Revenue by region</h3><p class="hint">Selected year · click a region to filter</p></div></div>
+        <div class="chart" id="cRegion"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 PORTFOLIO -->
+  <section class="view" id="v-portfolio" hidden>
+    <div class="grid">
+      <div class="card s12">
+        <div class="card-head">
+          <div><h3>Portfolio map</h3><p class="hint">Area = revenue · click a block to zoom in · click a product for its profile</p></div>
+          <div class="seg" id="tmMode"><button data-m="entity" aria-pressed="true">Color: Portfolio</button><button data-m="growth" aria-pressed="false">Color: YoY growth</button></div>
+        </div>
+        <div id="legTm" class="legend"></div>
+        <div class="chart tall" id="cTreemap"></div>
+      </div>
+      <div class="card s12">
+        <div class="card-head"><div><h3>Product scorecard</h3><p class="hint">Click a column to sort · click a row for the product profile</p></div>
+          <div class="toolbar"><input class="search" id="prodSearch" placeholder="Search products…" aria-label="Search products"></div></div>
+        <div class="tbl-wrap"><table id="tProd"></table></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 GEOGRAPHY -->
+  <section class="view" id="v-geo" hidden>
+    <div class="grid">
+      <div class="card s7">
+        <div class="card-head"><div><h3>Global revenue footprint</h3><p class="hint">Darker = more revenue · click a country to filter its region</p></div></div>
+        <div class="chart tall" id="cMap"></div>
+      </div>
+      <div class="card s5">
+        <div class="card-head"><div><h3>Regional mix</h3><p class="hint">Revenue by region, split by portfolio</p></div></div>
+        <div id="legGeo" class="legend"></div>
+        <div class="chart tall" id="cGeoMix"></div>
+      </div>
+      <div class="card s12">
+        <div class="card-head"><div><h3>Regional performance</h3><p class="hint">Click a row to filter the whole dashboard to that region</p></div></div>
+        <div class="tbl-wrap"><table id="tRegion"></table></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 MARKETS & FOCUS -->
+  <section class="view" id="v-markets" hidden>
+    <div class="grid">
+      <div class="card s7">
+        <div class="card-head"><div><h3>Where to play: focus matrix</h3><p class="hint">Market growth vs. our market share · bubble = revenue · click a bubble</p></div></div>
+        <div id="legMx" class="legend"></div>
+        <div class="chart tall" id="cMatrix"></div>
+      </div>
+      <div class="card s5">
+        <div class="card-head"><div><h3>Growth opportunity to FY28</h3><p class="hint">Incremental forecast revenue, FY26 → FY28 · top 10</p></div></div>
+        <div class="chart tall" id="cOpp"></div>
+      </div>
+      <div class="card s12">
+        <div class="card-head"><div><h3>Focus recommendations</h3><p class="hint">Score = 35% market growth · 25% white space · 20% our growth · 20% margin</p></div></div>
+        <div class="tbl-wrap"><table id="tFocus"></table></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 INTAKE -->
+  <section class="view" id="v-intake" hidden>
+    <div class="kpis" id="intakeKpis"></div>
+    <div class="grid">
+      <div class="card s6">
+        <div class="card-head"><div><h3>Intake funnel · FY26 YTD</h3><p class="hint">Projects reaching each stage gate · click a stage to filter the list</p></div></div>
+        <div class="chart" id="cFunnel"></div>
+      </div>
+      <div class="card s6">
+        <div class="card-head"><div><h3>Gate cycle time</h3><p class="hint">Average days in stage · line = target</p></div></div>
+        <div class="chart" id="cCycle"></div>
+      </div>
+      <div class="card s12">
+        <div class="card-head"><div><h3>Monthly intake vs. approvals</h3><p class="hint">Project requests submitted and approved per month</p></div></div>
+        <div class="legend" id="legMonthly"></div>
+        <div class="chart short" id="cMonthly"></div>
+      </div>
+      <div class="card s12">
+        <div class="card-head"><div><h3>Active project pipeline</h3><p class="hint" id="projHint">Click a row for the stage-gate view</p></div>
+          <div class="toolbar"><input class="search" id="projSearch" placeholder="Search projects…" aria-label="Search projects"><button class="btn" id="stageClear" hidden>Clear stage ✕</button></div></div>
+        <div class="tbl-wrap"><table id="tProj"></table></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span>Prototype · all figures are illustrative dummy data · $ in USD</span>
+  <span>Shortcuts: <kbd>←</kbd> <kbd>→</kbd> switch views · <kbd>P</kbd> present · <kbd>Esc</kbd> exit · <kbd>Backspace</kbd> zoom out</span>
+</footer>
+
+<div class="pnav" id="pnav"><button id="pPrev" aria-label="Previous">‹</button><div class="pdots" id="pdots"></div><button id="pNext" aria-label="Next">›</button><button id="pExit" aria-label="Exit presentation" title="Exit">✕</button></div>
+
+<dialog id="modal"><div class="m-head"><div><h2 id="mTitle"></h2><p id="mSub"></p></div><button class="close" id="mClose" aria-label="Close">✕</button></div><div class="m-body" id="mBody"></div></dialog>
+
+<script>
+/* =========================================================
+   1. DUMMY DATA (deterministic)
+   ========================================================= */
+let seed = 20261105;
+const rnd = () => (seed = (seed * 16807) % 2147483647, (seed - 1) / 2147483646);
+
+const YEARS = ['FY22','FY23','FY24','FY25','FY26','FY27','FY28'];
+const ACTUAL = 5; // FY22–FY26 actual, FY27–28 forecast
+const REG = [
+  {id:'NA',    name:'North America',  tam:.42, pen:1.25, dg: 0,     countries:{'United States':.91,'Canada':.09}},
+  {id:'EMEA',  name:'Europe, Middle East & Africa', short:'EMEA', tam:.27, pen:1.0, dg:-.006, countries:{'Germany':.2,'France':.14,'United Kingdom':.15,'Italy':.1,'Spain':.08,'Netherlands':.05,'Switzerland':.04,'Saudi Arabia':.05,'South Africa':.03,'Turkey':.04,'Sweden':.03,'Poland':.04,'Israel':.03,'Russia':.02}},
+  {id:'APAC',  name:'Asia Pacific',   tam:.14, pen:.62,  dg: .03,   countries:{'Japan':.38,'Australia':.18,'India':.16,'Korea':.14,'Indonesia':.06,'Thailand':.04,'Vietnam':.02,'New Zealand':.02}},
+  {id:'GC',    name:'Greater China',  tam:.10, pen:.55,  dg:-.02,   countries:{'China':1}},
+  {id:'LATAM', name:'Latin America',  tam:.07, pen:.5,   dg: .025,  countries:{'Brazil':.45,'Mexico':.25,'Argentina':.1,'Colombia':.1,'Chile':.1}},
+];
+// product tuple: [name, FY26 revenue $M, revenue CAGR, market size FY26 $M, market growth, patient penetration, gross margin]
+const PORT = [
+  {id:'CV', name:'Cardiovascular', split:[.48,.26,.12,.07,.07], units:[
+    {name:'Cardiac Rhythm Management', products:[['Leadless Pacemakers',1450,.09,4200,.08,.22,.71],['Implantable Defibrillators',2100,.02,6800,.03,.38,.66],['Insertable Cardiac Monitors',780,.11,2100,.12,.18,.74]]},
+    {name:'Structural Heart & Aortic', products:[['Transcatheter Valves',2300,.10,9500,.11,.24,.69],['Aortic Stent Grafts',820,.04,2600,.05,.31,.62]]},
+    {name:'Coronary & Peripheral Vascular', products:[['Drug-Coated Balloons',950,.06,3900,.07,.20,.64],['Coronary Stents',1200,-.01,5200,.01,.36,.55]]},
+    {name:'Cardiac Ablation Solutions', products:[['Pulsed Field Ablation',1250,.38,7200,.26,.12,.72],['Cryoablation',620,.03,1800,.02,.27,.63]]},
+  ]},
+  {id:'NS', name:'Neuroscience', split:[.52,.24,.11,.06,.07], units:[
+    {name:'Cranial & Spinal Technologies', products:[['Spinal Implants',2400,.03,9800,.04,.25,.68],['Surgical Navigation & Imaging',1150,.08,3400,.07,.29,.61],['Neurovascular Devices',1050,.09,4100,.10,.21,.70]]},
+    {name:'Neuromodulation', products:[['Spinal Cord Stimulation',980,.06,3600,.07,.19,.73],['Deep Brain Stimulation',620,.12,1500,.11,.28,.75],['Sacral Neuromodulation',720,.07,1900,.08,.33,.74]]},
+    {name:'Specialty Therapies', products:[['ENT Powered Instruments',860,.04,2800,.04,.26,.60],['Pelvic Health',410,.10,1700,.12,.14,.66]]},
+  ]},
+  {id:'MS', name:'Medical Surgical', split:[.40,.30,.14,.09,.07], units:[
+    {name:'Surgical & Endoscopy', products:[['Advanced Energy',2250,.05,7400,.05,.33,.65],['Surgical Staplers',1900,.02,6900,.03,.30,.58],['GI Endoscopy',780,.07,3500,.08,.17,.62]]},
+    {name:'Acute Care & Monitoring', products:[['Patient Monitoring',1300,.03,5600,.04,.23,.52],['Airway & Ventilation',1050,.01,4800,.02,.21,.48]]},
+    {name:'Surgical Robotics', products:[['Soft-Tissue Robotics',420,.45,8200,.18,.04,.45],['Robotic Instruments',210,.40,1900,.22,.06,.58]]},
+  ]},
+  {id:'DB', name:'Diabetes', split:[.38,.40,.12,.03,.07], units:[
+    {name:'Insulin Delivery', products:[['Automated Insulin Pumps',1500,.10,6500,.09,.19,.57],['Infusion Sets',520,.07,1600,.07,.30,.61]]},
+    {name:'Continuous Glucose Monitoring', products:[['CGM Sensors',840,.16,14500,.14,.05,.50]]},
+    {name:'Connected Care', products:[['Smart Insulin Pens',140,.32,1600,.25,.04,.55]]},
+  ]},
+];
+
+const PRODUCTS = [], UNITS = [], CUBE = [];
+PORT.forEach((p, pi) => {
+  p.idx = pi;
+  p.units.forEach((u, ui) => {
+    u.idx = ui; u.id = p.id + '-' + ui; u.p = p.id; UNITS.push(u);
+    u.products = u.products.map((t, ki) => {
+      const prod = {id:u.id + '-' + ki, idx:ki, name:t[0], p:p.id, u:u.id, rev26:t[1], g:t[2], tam26:t[3], tamg:t[4], pen:t[5], margin:t[6]};
+      PRODUCTS.push(prod);
+      let sp = p.split.map(s => s * (0.82 + rnd() * 0.36)); const ss = sp.reduce((a, b) => a + b); sp = sp.map(s => s / ss);
+      REG.forEach((r, ri) => {
+        const g = Math.max(-.08, prod.g + r.dg + (rnd() - .5) * .025);
+        YEARS.forEach((y, yi) => {
+          const k = yi - 4;
+          const noise = yi < ACTUAL ? 1 + (rnd() - .5) * .03 : 1;
+          const rev = prod.rev26 * sp[ri] * Math.pow(1 + g, k) * noise;
+          const tam = prod.tam26 * r.tam * Math.pow(1 + prod.tamg, k);
+          const pen = Math.min(.9, prod.pen * r.pen * Math.pow(1 + prod.tamg * .5, k));
+          CUBE.push({p:p.id, u:u.id, k:prod.id, r:r.id, y:yi, rev, tam, pen, plan: rev * (1 + (rnd() - .42) * .07)});
+        });
+      });
+      return prod;
+    });
+  });
+});
+const byId = id => PRODUCTS.find(x => x.id === id) || UNITS.find(x => x.id === id) || PORT.find(x => x.id === id);
+
+// Intake projects
+const STAGES = ['Intake','Screening','Business Case','Portfolio Review','Approved','Development','Launch'];
+const TARGET = [10,21,45,30,14,240,90];
+const PROJ_SEED = [
+  ['Next-gen leadless pacing platform','CV'],['PFA catheter v3 (larger lesion set)','CV'],['AI arrhythmia triage for ICM data','CV'],['Small-annulus TAVR valve','CV'],['Drug-coated balloon — below-the-knee','CV'],['Remote ICD follow-up service','CV'],['Mapping integration for PFA','CV'],['Aortic graft for complex anatomy','CV'],['Conduction-system pacing leads','CV'],['Renal denervation market entry','CV'],
+  ['Closed-loop spinal cord stimulation','NS'],['Adaptive DBS sensing upgrade','NS'],['Navigation-guided spine robotics','NS'],['Stroke thrombectomy catheter','NS'],['Rechargeable sacral stimulator','NS'],['ENT navigation in office setting','NS'],['Pelvic health digital coaching','NS'],['Flow diverter — distal vessels','NS'],['Spine implant portfolio rationalization','NS'],
+  ['Single-port robotic platform','MS'],['Robotic stapler integration','MS'],['Energy device for bariatric surgery','MS'],['AI polyp detection module','MS'],['Remote patient monitoring hub','MS'],['Ventilator weaning decision support','MS'],['Robotic instruments — reposables','MS'],['Capsule endoscopy next-gen','MS'],['Hospital-at-home monitoring kit','MS'],['Surgical video analytics','MS'],
+  ['15-day CGM sensor','DB'],['Smart pen dose-capture app','DB'],['Tubeless patch pump','DB'],['Pediatric closed-loop algorithm','DB'],['CGM for type 2 non-insulin','DB'],['Extended-wear infusion set','DB'],['Pharmacy channel launch — CGM','DB'],
+  ['Emerging-markets value pacing line','CV'],['Interventional pain portfolio expansion','NS'],['Robotics training academy','MS'],['India CGM localization','DB'],['China VBP pricing response','CV'],['EU MDR re-certification wave 3','MS'],
+];
+const SPONSORS = ['A. Rivera','J. Chen','P. Shah','M. Okafor','L. Nguyen','S. Patel','K. Müller','R. Silva','D. Kim','E. Rossi'];
+const PROJECTS = PROJ_SEED.map((t, i) => {
+  const si = [0,0,1,1,1,2,2,2,2,3,3,3,4,4,5,5,5,5,6,6][Math.floor(rnd() * 20)];
+  const p = t[1];
+  const r = REG[Math.floor(Math.pow(rnd(), 1.4) * REG.length)].id;
+  const peak = Math.round((40 + rnd() * 460) * (p === 'MS' && /robot/i.test(t[0]) ? 1.8 : 1));
+  const invest = Math.round(peak * (0.15 + rnd() * 0.35));
+  const npv = Math.round(peak * (0.6 + rnd() * 1.2) - invest * 0.6);
+  const dur = TARGET.map((d, s) => s < si ? Math.round(d * (0.7 + rnd() * 0.9)) : null);
+  const days = Math.round(TARGET[si] * (0.2 + rnd() * 1.1));
+  const m = Math.floor(rnd() * 12);
+  return {id:'PRJ-' + (1041 + i), name:t[0], p, r, si, stage:STAGES[si], peak, invest, npv, risk:['Low','Medium','High'][Math.floor(rnd() * 3)], fit:Math.round(55 + rnd() * 45), sponsor:SPONSORS[i % SPONSORS.length], dur, days, submitted:new Date(2025, 11 - Math.floor(rnd() * 14) + m * 0, 1 + Math.floor(rnd() * 27))};
+});
+const FUNNEL_BASE = [186,132,74,41,26,19,7];
+const MONTHS = ['Dec','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov'];
+const MONTHLY = PORT.map(p => MONTHS.map((m, i) => { const s = Math.round((2 + rnd() * 4) * (p.id === 'CV' ? 1.4 : p.id === 'DB' ? .7 : 1) * (1 + i * .025)); return {s, a: Math.round(s * (0.25 + rnd() * 0.3))}; }));
+
+/* =========================================================
+   2. STATE & HELPERS
+   ========================================================= */
+const state = {tab:'overview', y:4, r:null, p:null, u:null, tm:'entity', prodSort:['rev','desc'], regSort:['rev','desc'], focusSort:['score','desc'], projSort:['npv','desc'], stage:null};
+const TABS = [['overview','Executive Overview'],['portfolio','Portfolio & Therapies'],['geo','Geography'],['markets','Markets & Focus'],['intake','Project Intake']];
+
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const T = () => ({ink:css('--ink'), ink2:css('--ink-2'), ink3:css('--ink-3'), line:css('--line'), line2:css('--line-2'), grid:css('--grid'), surface:css('--surface'), surface2:css('--surface-2'), accent:css('--accent'), accent2:css('--accent-2'), up:css('--up'), down:css('--down'), none:css('--none'), pal:[0,1,2,3,4].map(i => css('--c' + i)), seq:[0,1,2,3,4].map(i => css('--seq' + i))});
+const FONT = '-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Segoe UI",Roboto,sans-serif';
+const fmt$ = v => { const a = Math.abs(v); return (v < 0 ? '−' : '') + (a >= 1000 ? '$' + (a / 1000).toFixed(a >= 10000 ? 1 : 2) + 'B' : '$' + Math.round(a) + 'M'); };
+const fmtP = (v, d = 1) => (v * 100).toFixed(d) + '%';
+const fmtD = (v, d = 1) => (v >= 0 ? '+' : '−') + Math.abs(v * 100).toFixed(d) + '%';
+const cls = v => v >= 0 ? 'up' : 'down';
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const regName = id => (REG.find(r => r.id === id) || {}).name;
+const regShort = id => { const r = REG.find(r => r.id === id); return r.short || r.name; };
+
+function sel(o = {}) {
+  const f = {p:state.p, u:state.u, r:state.r, k:null, y:null, ...o};
+  return CUBE.filter(c => (f.p == null || c.p === f.p) && (f.u == null || c.u === f.u) && (f.k == null || c.k === f.k) && (f.r == null || c.r === f.r) && (f.y == null || c.y === f.y));
+}
+function agg(rows) {
+  let rev = 0, tam = 0, penW = 0, plan = 0;
+  for (const c of rows) { rev += c.rev; tam += c.tam; penW += c.pen * c.tam; plan += c.plan; }
+  return {rev, tam, plan, share: tam ? rev / tam : 0, pen: tam ? penW / tam : 0, white: tam - rev};
+}
+function metric(o) { const a = agg(sel(o)); const prev = agg(sel({...o, y: (o.y ?? state.y) - 1})); a.yoy = prev.rev ? a.rev / prev.rev - 1 : 0; a.prev = prev.rev; return a; }
+const series = o => YEARS.slice(0, ACTUAL).map((_, y) => agg(sel({...o, y})).rev);
+
+function children() {
+  const t = T();
+  if (state.u) return PRODUCTS.filter(x => x.u === state.u).map(x => ({id:x.id, name:x.name, key:'k', color:t.pal[x.idx % 5]}));
+  if (state.p) return UNITS.filter(u => u.p === state.p).map(u => ({id:u.id, name:u.name, key:'u', color:t.pal[u.idx % 5]}));
+  return PORT.map(p => ({id:p.id, name:p.name, key:'p', color:t.pal[p.idx]}));
+}
+const childLabel = () => state.u ? 'Products' : state.p ? 'Operating units' : 'Portfolios';
+const scopeName = () => (state.u ? byId(state.u).name : state.p ? byId(state.p).name : 'Total portfolio') + (state.r ? ' · ' + regShort(state.r) : '');
+const prodColor = (prod) => T().pal[PORT.findIndex(p => p.id === prod.p)];
+
+function drill(key, id) {
+  if (key === 'p') { state.p = id; state.u = null; }
+  else if (key === 'u') { state.p = byId(id).p; state.u = id; }
+  else if (key === 'k') return openProduct(id);
+  render();
+}
+function zoomOut() { if (state.u) state.u = null; else if (state.p) state.p = null; else if (state.r) state.r = null; else return; render(); }
+
+function spark(vals, color) {
+  const w = 100, h = 30, mn = Math.min(...vals), mx = Math.max(...vals), rg = mx - mn || 1;
+  const pts = vals.map((v, i) => [i / (vals.length - 1) * w, h - 3 - (v - mn) / rg * (h - 6)]);
+  const d = pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' ');
+  const last = pts[pts.length - 1];
+  return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" style="color:${color || 'var(--accent)'}" aria-hidden="true"><path d="${d} L${w} ${h} L0 ${h}Z" fill="currentColor" opacity=".10"/><path d="${d}" fill="none" stroke="currentColor" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${last[0]}" cy="${last[1]}" r="2.6" fill="currentColor"/></svg>`;
+}
+function legend(el, items) { document.getElementById(el).innerHTML = items.map(i => `<span><i class="dot" style="background:${i.color}"></i>${esc(i.name)}</span>`).join(''); }
+
+/* Charts */
+const charts = {};
+const ro = new ResizeObserver(es => es.forEach(e => { const c = echarts.getInstanceByDom(e.target); c && c.resize(); }));
+function chart(id) {
+  const el = document.getElementById(id);
+  let c = echarts.getInstanceByDom(el);
+  if (!c) { c = echarts.init(el, null, {renderer:'canvas'}); ro.observe(el); charts[id] = c; }
+  c.off('click');
+  return c;
+}
+function base() {
+  const t = T();
+  return {
+    textStyle:{fontFamily:FONT, color:t.ink2}, animationDuration:450, animationEasing:'cubicOut',
+    tooltip:{trigger:'item', backgroundColor:t.surface, borderColor:t.line2, borderWidth:1, padding:[8, 12], textStyle:{color:t.ink, fontSize:12, fontFamily:FONT}, extraCssText:'border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.18);'},
+    grid:{left:8, right:16, top:16, bottom:8, containLabel:true},
+  };
+}
+const axisCommon = t => ({axisLine:{show:false}, axisTick:{show:false}, axisLabel:{color:t.ink3, fontSize:11}, splitLine:{lineStyle:{color:t.grid}}});
+const ttRow = (color, name, val) => `<div style="display:flex;gap:16px;justify-content:space-between;align-items:center"><span style="display:flex;gap:6px;align-items:center"><i style="width:8px;height:8px;border-radius:2px;background:${color};display:inline-block"></i>${esc(name)}</span><b style="font-variant-numeric:tabular-nums">${val}</b></div>`;
+
+/* =========================================================
+   3. CHROME: tabs, filters, crumbs, headline
+   ========================================================= */
+function buildChrome() {
+  document.getElementById('tabs').innerHTML = TABS.map((t, i) => `<button role="tab" data-tab="${t[0]}"><span class="n">0${i + 1}</span>${t[1]}</button>`).join('');
+  document.getElementById('tabs').onclick = e => { const b = e.target.closest('button'); if (b) setTab(b.dataset.tab); };
+  document.getElementById('yearSeg').innerHTML = YEARS.slice(0, ACTUAL).map((y, i) => `<button data-y="${i}">${y}</button>`).join('');
+  document.getElementById('yearSeg').onclick = e => { const b = e.target.closest('button'); if (b) { state.y = +b.dataset.y; render(); } };
+  const rs = document.getElementById('regionSel');
+  rs.innerHTML = '<option value="">All regions</option>' + REG.map(r => `<option value="${r.id}">${r.name}</option>`).join('');
+  rs.onchange = () => { state.r = rs.value || null; render(); };
+  document.getElementById('pdots').innerHTML = TABS.map((t, i) => `<i data-i="${i}" title="${t[1]}"></i>`).join('');
+  document.getElementById('pdots').onclick = e => { const d = e.target.closest('i'); if (d) setTab(TABS[+d.dataset.i][0]); };
+}
+function setTab(tab) { state.tab = tab; render(); }
+function step(d) { const i = TABS.findIndex(t => t[0] === state.tab); setTab(TABS[(i + d + TABS.length) % TABS.length][0]); }
+
+function renderChrome() {
+  document.querySelectorAll('#tabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === state.tab));
+  document.querySelectorAll('#yearSeg button').forEach(b => b.setAttribute('aria-pressed', +b.dataset.y === state.y));
+  document.getElementById('regionSel').value = state.r || '';
+  document.querySelectorAll('#pdots i').forEach((d, i) => d.classList.toggle('on', TABS[i][0] === state.tab));
+  TABS.forEach(t => document.getElementById('v-' + t[0]).hidden = t[0] !== state.tab);
+  const parts = [`<button data-c="root" class="${!state.p ? 'cur' : ''}">All portfolios</button>`];
+  if (state.p) parts.push('›', `<button data-c="p" class="${!state.u ? 'cur' : ''}">${esc(byId(state.p).name)}</button>`);
+  if (state.u) parts.push('›', `<button data-c="u" class="cur">${esc(byId(state.u).name)}</button>`);
+  if (state.r) parts.push('<span style="margin-left:8px">Region:</span>', `<button data-c="r" class="cur" title="Clear region">${esc(regShort(state.r))}<span class="chip-x">✕</span></button>`);
+  parts.push(`<span style="margin-left:auto">${YEARS[state.y]}${state.p || state.r ? ' · <kbd>Backspace</kbd> to zoom out' : ''}</span>`);
+  const cr = document.getElementById('crumbs');
+  cr.innerHTML = parts.join(' ');
+  cr.onclick = e => { const b = e.target.closest('button'); if (!b) return; const c = b.dataset.c;
+    if (c === 'root') { state.p = state.u = null; } else if (c === 'p') { state.u = null; } else if (c === 'r') { state.r = null; } render(); };
+}
+function setHeadline(h, s) { document.getElementById('headline').innerHTML = h; document.getElementById('sub').innerHTML = s; }
+
+/* =========================================================
+   4. VIEWS
+   ========================================================= */
+function renderOverview() {
+  const t = T(), y = state.y, m = metric({y});
+  const pipe = projectsFiltered().reduce((a, p) => a + p.npv, 0);
+  const sp = series({});
+  const kpis = [
+    ['Revenue', fmt$(m.rev), `<span class="${cls(m.yoy)}">${fmtD(m.yoy)}</span> vs ${YEARS[y - 1] || 'prior'}`, sp, 'Net sales for the selected scope and year'],
+    ['Vs. plan', fmtD(m.rev / m.plan - 1), `${fmt$(m.rev - m.plan)} to plan of ${fmt$(m.plan)}`, sp.map((v, i) => { const a = agg(sel({y:i})); return a.rev / a.plan; }), 'Actual revenue relative to annual operating plan'],
+    ['Market size (TAM)', fmt$(m.tam), `Market ${fmtD(agg(sel({y})).tam / agg(sel({y:y - 1})).tam - 1 || 0)} YoY`, YEARS.slice(0, ACTUAL).map((_, i) => agg(sel({y:i})).tam), 'Total addressable market for the products in scope'],
+    ['Market share', fmtP(m.share), `${fmtD(m.share - agg(sel({y:y - 1})).share, 1).replace('%', ' pts')} YoY`, YEARS.slice(0, ACTUAL).map((_, i) => agg(sel({y:i})).share), 'Our revenue ÷ total addressable market'],
+    ['Market penetration', fmtP(m.pen), 'Eligible patients treated', YEARS.slice(0, ACTUAL).map((_, i) => agg(sel({y:i})).pen), 'Share of eligible patients receiving a device therapy (market-weighted)'],
+    ['White-space opportunity', fmt$(m.white), `${fmtP(1 - m.share, 0)} of market not yet captured`, YEARS.slice(0, ACTUAL).map((_, i) => agg(sel({y:i})).white), 'Addressable market not captured by our revenue (TAM − revenue)'],
+    ['Pipeline NPV', fmt$(pipe), `${projectsFiltered().length} active projects`, null, 'Net present value of projects in the intake & development pipeline'],
+  ];
+  document.getElementById('kpis').innerHTML = kpis.map(k => `<div class="kpi"><div class="lab">${k[0]}<span class="info" title="${esc(k[4])}">i</span></div><div class="val num">${k[1]}</div><div class="delta num">${k[2]}</div>${k[3] ? spark(k[3]) : ''}</div>`).join('');
+
+  // entity cards
+  const ch = children();
+  const total = m.rev;
+  document.getElementById('entTitle').textContent = childLabel() + (state.p ? ' in ' + byId(state.u || state.p).name : '');
+  const ents = ch.map(c => { const mm = metric({[c.key]:c.id, y}); return {...c, m:mm, sp:series({[c.key]:c.id})}; }).sort((a, b) => b.m.rev - a.m.rev);
+  document.getElementById('ents').innerHTML = ents.map(e => `<button class="ent" data-k="${e.key}" data-id="${e.id}"><span class="go">${e.key === 'k' ? 'Profile ›' : 'Zoom in ›'}</span><div class="nm"><i class="dot" style="background:${e.color}"></i>${esc(e.name)}</div><div class="rv num">${fmt$(e.m.rev)}</div><div class="meta num"><span class="${cls(e.m.yoy)}">${fmtD(e.m.yoy)} YoY</span><span>Share ${fmtP(e.m.share)}</span><span>Mix ${fmtP(e.m.rev / total, 0)}</span></div>${spark(e.sp, e.color)}</button>`).join('');
+  document.getElementById('ents').onclick = e => { const b = e.target.closest('.ent'); if (b) drill(b.dataset.k, b.dataset.id); };
+
+  // trend
+  legend('legTrend', ch);
+  const c1 = chart('cTrend');
+  c1.setOption({...base(), tooltip:{...base().tooltip, trigger:'axis', axisPointer:{type:'shadow', shadowStyle:{color:t.grid}},
+      formatter: ps => `<b>${ps[0].axisValue}${ps[0].dataIndex >= ACTUAL ? ' (forecast)' : ''}</b>` + ps.slice().reverse().map(p => ttRow(ch[p.seriesIndex].color, p.seriesName, fmt$(p.value))).join('') + `<div style="border-top:1px solid ${t.line};margin-top:6px;padding-top:6px">${ttRow('transparent', 'Total', fmt$(ps.reduce((a, p) => a + p.value, 0)))}</div>`},
+    xAxis:{type:'category', data:YEARS, ...axisCommon(t), axisLabel:{color:t.ink3, fontSize:11, formatter:(v, i) => i >= ACTUAL ? v + '\nForecast' : v}},
+    yAxis:{type:'value', ...axisCommon(t), axisLabel:{color:t.ink3, fontSize:11, formatter:v => fmt$(v)}},
+    series: ch.map((c, ci) => ({name:c.name, type:'bar', stack:'s', barMaxWidth:46,
+      itemStyle:{borderColor:t.surface, borderWidth:1},
+      data: YEARS.map((_, yi) => ({value: agg(sel({[c.key]:c.id, y:yi})).rev, itemStyle:{color:c.color, opacity: yi >= ACTUAL ? .45 : (yi === state.y ? 1 : .82), borderRadius: ci === ch.length - 1 ? [4, 4, 0, 0] : 0}})),
+      emphasis:{focus:'series'}}))});
+  c1.on('click', p => drill(ch[p.seriesIndex].key, ch[p.seriesIndex].id));
+
+  // regions
+  const regs = REG.map(r => ({...r, m: metric({r:r.id, y})})).sort((a, b) => a.m.rev - b.m.rev);
+  const c2 = chart('cRegion');
+  c2.setOption({...base(), grid:{left:8, right:70, top:8, bottom:8, containLabel:true},
+    tooltip:{...base().tooltip, formatter: p => { const r = regs[p.dataIndex]; return `<b>${r.name}</b>` + ttRow(t.accent, 'Revenue', fmt$(r.m.rev)) + ttRow('transparent', 'YoY', fmtD(r.m.yoy)) + ttRow('transparent', 'Market share', fmtP(r.m.share)); }},
+    xAxis:{type:'value', show:false}, yAxis:{type:'category', data:regs.map(r => r.short || r.name), ...axisCommon(t), axisLabel:{color:t.ink2, fontSize:12}},
+    series:[{type:'bar', barWidth:'55%', data:regs.map(r => ({value:r.m.rev, itemStyle:{color: !state.r || state.r === r.id ? t.accent : t.none, borderRadius:[0, 4, 4, 0]}})),
+      label:{show:true, position:'right', color:t.ink2, fontSize:11, formatter: p => fmt$(p.value) + '  ' + fmtD(regs[p.dataIndex].m.yoy, 0)}}]});
+  c2.on('click', p => { const id = regs[p.dataIndex].id; state.r = state.r === id ? null : id; render(); });
+
+  // headline
+  const contrib = ents.map(e => ({...e, d: e.m.rev - e.m.prev})).sort((a, b) => b.d - a.d)[0];
+  setHeadline(`${esc(scopeName())} delivered <em>${fmt$(m.rev)}</em> in ${YEARS[y]}, ${fmtD(m.yoy)} year over year.`,
+    y > 0 ? `<b>${esc(contrib.name)}</b> contributed the most growth (${fmt$(contrib.d)} added). We hold ${fmtP(m.share)} of a ${fmt$(m.tam)} addressable market, leaving <b>${fmt$(m.white)}</b> of white space. Revenue is ${fmtD(m.rev / m.plan - 1)} versus plan.` : 'Baseline year. Select a later year to see growth.');
+}
+
+function productRows(y) {
+  return PRODUCTS.filter(x => (!state.p || x.p === state.p) && (!state.u || x.u === state.u)).map(x => {
+    const m = metric({k:x.id, y, p:null, u:null}); return {x, ...m};
+  });
+}
+function sortRows(rows, [k, dir], get) { const g = get || ((r, k) => r[k]); return rows.sort((a, b) => { const A = g(a, k), B = g(b, k); return (typeof A === 'string' ? A.localeCompare(B) : A - B) * (dir === 'asc' ? 1 : -1); }); }
+function table(el, cols, rows, sortKey, onSort, onRow) {
+  const tb = document.getElementById(el);
+  tb.innerHTML = `<thead><tr>${cols.map(c => `<th class="${c.l ? 'l' : ''}" data-k="${c.k}" ${sortKey[0] === c.k ? `data-dir="${sortKey[1]}"` : ''}>${c.h}</th>`).join('')}</tr></thead><tbody>${rows.map((r, i) => `<tr data-i="${i}">${cols.map(c => `<td class="${c.l ? 'l' : ''}">${c.f(r)}</td>`).join('')}</tr>`).join('')}</tbody>`;
+  tb.querySelector('thead').onclick = e => { const th = e.target.closest('th'); if (!th) return; const k = th.dataset.k; onSort(sortKey[0] === k ? [k, sortKey[1] === 'desc' ? 'asc' : 'desc'] : [k, 'desc']); };
+  tb.querySelector('tbody').onclick = e => { const tr = e.target.closest('tr'); if (tr) onRow(rows[+tr.dataset.i]); };
+}
+
+function renderPortfolio() {
+  const t = T(), y = state.y;
+  document.querySelectorAll('#tmMode button').forEach(b => b.setAttribute('aria-pressed', b.dataset.m === state.tm));
+  document.getElementById('tmMode').onclick = e => { const b = e.target.closest('button'); if (b) { state.tm = b.dataset.m; renderPortfolio(); } };
+  const ch = children();
+  const growthColor = g => { // diverging: magenta (decline) ← grey → blue (growth)
+    const c = g >= 0 ? t.pal[0] : t.pal[4], k = Math.min(1, Math.abs(g) / (g >= 0 ? .2 : .06));
+    return echarts.color.lerp(k * .85 + .15, [t.ink3, c]);
+  };
+  const leaf = (x, color) => { const m = metric({k:x.id, y, p:null, u:null}); return {name:x.name, value:m.rev, ref:['k', x.id], m, itemStyle:{color: state.tm === 'growth' ? growthColor(m.yoy) : color}}; };
+  const data = ch.map(c => {
+    if (c.key === 'k') return leaf(byId(c.id), c.color);
+    const units = c.key === 'p' ? UNITS.filter(u => u.p === c.id) : [byId(c.id)];
+    const kids = c.key === 'p' ? units.map(u => ({name:u.name, ref:['u', u.id], children:u.products.map(x => leaf(x, c.color)), itemStyle:{color:c.color, borderColor:c.color}})) : units[0].products.map(x => leaf(x, c.color));
+    return {name:c.name, ref:[c.key, c.id], children:kids, itemStyle:{color:c.color}};
+  });
+  legend('legTm', state.tm === 'growth' ? [{name:'Declining', color:t.pal[4]}, {name:'Flat', color:t.ink3}, {name:'Growing (≥ 20%)', color:t.pal[0]}] : ch);
+  const c = chart('cTreemap');
+  c.setOption({...base(), tooltip:{...base().tooltip, formatter: p => { const d = p.data; if (!d) return '';
+      const m = d.m || agg(sel({y, ...(d.ref[0] === 'p' ? {p:d.ref[1], u:null} : {u:d.ref[1]})}));
+      return `<b>${esc(d.name)}</b>` + ttRow(t.accent, 'Revenue', fmt$(p.value)) + (d.m ? ttRow('transparent', 'YoY', fmtD(d.m.yoy)) : '') + ttRow('transparent', 'Market share', fmtP(m.share)) + `<div style="color:${t.ink3};font-size:11px;margin-top:4px">${d.ref[0] === 'k' ? 'Click for profile' : 'Click to zoom in'}</div>`; }},
+    series:[{type:'treemap', roam:false, nodeClick:false, breadcrumb:{show:false}, width:'100%', height:'100%', top:0, left:0,
+      label:{show:true, color:'#fff', fontFamily:FONT, fontSize:12, fontWeight:600, overflow:'truncate', formatter: p => `${p.name}\n{v|${fmt$(p.value)}${p.data.m ? '  ' + fmtD(p.data.m.yoy, 0) : ''}}`, rich:{v:{fontSize:11, fontWeight:500, color:'rgba(255,255,255,.85)', padding:[3, 0, 0, 0]}}},
+      upperLabel:{show:true, height:24, color:'#fff', fontWeight:700, fontSize:12, fontFamily:FONT, formatter: p => `${p.name}   ${fmt$(p.value)}`},
+      itemStyle:{borderColor:t.surface, borderRadius:6},
+      levels:[{itemStyle:{borderWidth:0, gapWidth:6}, upperLabel:{show:false}}, {itemStyle:{borderWidth:2, gapWidth:2, borderColor:t.surface}, upperLabel:{show:true, color:t.ink, fontSize:13}}, {itemStyle:{borderWidth:2, gapWidth:1}, upperLabel:{show:true, color:'#fff', height:20, fontSize:11, fontWeight:600}}, {itemStyle:{borderWidth:0}}],
+      data}]}, true);
+  c.on('click', p => { if (p.data && p.data.ref) drill(p.data.ref[0], p.data.ref[1]); });
+
+  // table
+  const q = document.getElementById('prodSearch').value.toLowerCase();
+  document.getElementById('prodSearch').oninput = () => renderPortfolio();
+  const rows = sortRows(productRows(y).filter(r => r.x.name.toLowerCase().includes(q)), state.prodSort, (r, k) => k === 'name' ? r.x.name : k === 'port' ? byId(r.x.p).name : k === 'margin' ? r.x.margin : r[k]);
+  table('tProd', [
+    {k:'name', h:'Product', l:1, f:r => `<span style="display:inline-flex;gap:8px;align-items:center"><i class="dot" style="background:${prodColor(r.x)}"></i>${esc(r.x.name)}</span>`},
+    {k:'port', h:'Portfolio', l:1, f:r => esc(byId(r.x.p).name)},
+    {k:'rev', h:'Revenue', f:r => fmt$(r.rev)},
+    {k:'yoy', h:'YoY', f:r => `<span class="${cls(r.yoy)}">${fmtD(r.yoy)}</span>`},
+    {k:'tam', h:'Market size', f:r => fmt$(r.tam)},
+    {k:'share', h:'Share', f:r => fmtP(r.share)},
+    {k:'pen', h:'Penetration', f:r => fmtP(r.pen)},
+    {k:'white', h:'White space', f:r => fmt$(r.white)},
+    {k:'margin', h:'Gross margin', f:r => fmtP(r.x.margin, 0)},
+  ], rows, state.prodSort, s => { state.prodSort = s; renderPortfolio(); }, r => openProduct(r.x.id));
+
+  const all = productRows(y).sort((a, b) => b.rev - a.rev), tot = all.reduce((a, r) => a + r.rev, 0);
+  const top3 = all.slice(0, 3).reduce((a, r) => a + r.rev, 0) / tot;
+  const fast = all.slice().sort((a, b) => b.yoy - a.yoy)[0], slow = all.slice().sort((a, b) => a.yoy - b.yoy)[0];
+  setHeadline(`${all.length} products across ${state.u ? '1 operating unit' : state.p ? UNITS.filter(u => u.p === state.p).length + ' operating units' : PORT.length + ' portfolios'}; the top 3 drive <em>${fmtP(top3, 0)}</em> of revenue.`,
+    `Fastest growing: <b>${esc(fast.x.name)}</b> (${fmtD(fast.yoy)}). Slowest: <b>${esc(slow.x.name)}</b> (${fmtD(slow.yoy)}). Click any block on the map to zoom in.`);
+}
+
+let WORLD = null, worldLoading = false;
+function countryRevenue(y) {
+  const out = [];
+  REG.forEach(r => { const rev = agg(sel({r:r.id, y})).rev; const ws = Object.values(r.countries).reduce((a, b) => a + b, 0);
+    Object.entries(r.countries).forEach(([n, w]) => out.push({name:n, value: state.r && state.r !== r.id ? null : rev * w / ws, reg:r.id})); });
+  return out;
+}
+function renderGeo() {
+  const t = T(), y = state.y, ports = PORT.filter(p => !state.p || p.id === state.p);
+  // map
+  const cm = chart('cMap');
+  if (!WORLD) {
+    cm.showLoading({text:'Loading map…', color:t.accent, textColor:t.ink2, maskColor:'transparent'});
+    if (!worldLoading) { worldLoading = true;
+      fetch('https://cdn.jsdelivr.net/npm/echarts@4.9.0/map/json/world.json').then(r => r.json()).then(j => { echarts.registerMap('world', j); WORLD = true; if (state.tab === 'geo') renderGeo(); })
+        .catch(() => { cm.hideLoading(); cm.setOption({title:{text:'Map unavailable offline — see regional mix', left:'center', top:'middle', textStyle:{color:t.ink3, fontSize:13}}}); });
+    }
+  } else {
+    cm.hideLoading();
+    const cd = countryRevenue(y), mx = Math.max(...cd.map(d => d.value || 0));
+    cm.setOption({...base(), tooltip:{...base().tooltip, formatter: p => p.data && p.data.value ? `<b>${p.name}</b><div style="color:${t.ink3}">${regName(p.data.reg)}</div>` + ttRow(t.accent, 'Revenue', fmt$(p.data.value)) : `<b>${p.name}</b><div style="color:${t.ink3}">No direct presence (illustrative)</div>`},
+      visualMap:{min:0, max:mx, show:true, orient:'horizontal', left:'center', bottom:4, itemWidth:12, itemHeight:140, calculable:false, inRange:{color:t.seq}, text:['More', 'Less'], textStyle:{color:t.ink3, fontSize:11}, formatter:v => fmt$(v)},
+      series:[{type:'map', map:'world', roam:true, zoom:1.15, center:[15, 20], scaleLimit:{min:1, max:8}, top:10, bottom:40, data:cd, nameProperty:'name',
+        itemStyle:{areaColor:t.none, borderColor:t.surface, borderWidth:.6}, emphasis:{label:{show:false}, itemStyle:{areaColor:t.accent2}}, select:{disabled:true}}]}, true);
+    cm.on('click', p => { if (p.data && p.data.reg) { state.r = state.r === p.data.reg ? null : p.data.reg; render(); } });
+  }
+  // mix
+  const regs = REG.map(r => ({...r, m:metric({r:r.id, y, u:null})})).sort((a, b) => a.m.rev - b.m.rev);
+  const pc = ports.map(p => ({...p, color:t.pal[p.idx]}));
+  legend('legGeo', pc);
+  const c2 = chart('cGeoMix');
+  c2.setOption({...base(), grid:{left:8, right:20, top:8, bottom:8, containLabel:true},
+    tooltip:{...base().tooltip, trigger:'axis', axisPointer:{type:'shadow', shadowStyle:{color:t.grid}}, formatter: ps => `<b>${regName(regs[ps[0].dataIndex].id)}</b>` + ps.slice().reverse().map(p => ttRow(pc[p.seriesIndex].color, p.seriesName, fmt$(p.value))).join('')},
+    xAxis:{type:'value', ...axisCommon(t), axisLabel:{color:t.ink3, fontSize:11, formatter:v => fmt$(v)}},
+    yAxis:{type:'category', data:regs.map(r => r.short || r.name), ...axisCommon(t), axisLabel:{color:t.ink2, fontSize:12}},
+    series: pc.map((p, i) => ({name:p.name, type:'bar', stack:'s', barWidth:'55%', itemStyle:{borderColor:t.surface, borderWidth:1},
+      data: regs.map(r => ({value:agg(sel({p:p.id, r:r.id, y, u:state.p === p.id ? state.u : null})).rev, itemStyle:{color:p.color, opacity:!state.r || state.r === r.id ? 1 : .3, borderRadius: i === pc.length - 1 ? [0, 4, 4, 0] : 0}}))}))}, true);
+  c2.on('click', p => { const id = regs[p.dataIndex].id; state.r = state.r === id ? null : id; render(); });
+  // table
+  const total = agg(sel({y, r:null})).rev;
+  const rows = sortRows(REG.map(r => ({r, ...metric({r:r.id, y})})), state.regSort, (o, k) => k === 'name' ? o.r.name : o[k]);
+  table('tRegion', [
+    {k:'name', h:'Region', l:1, f:o => `<b>${esc(o.r.name)}</b>${state.r === o.r.id ? ' <span class="pill invest">Filtered</span>' : ''}`},
+    {k:'rev', h:'Revenue', f:o => fmt$(o.rev)}, {k:'yoy', h:'YoY', f:o => `<span class="${cls(o.yoy)}">${fmtD(o.yoy)}</span>`},
+    {k:'mix', h:'Mix', f:o => fmtP(o.rev / total, 0)}, {k:'tam', h:'Market size', f:o => fmt$(o.tam)},
+    {k:'share', h:'Share', f:o => fmtP(o.share)}, {k:'pen', h:'Penetration', f:o => fmtP(o.pen)}, {k:'white', h:'White space', f:o => fmt$(o.white)},
+  ], rows, state.regSort, s => { state.regSort = s; renderGeo(); }, o => { state.r = state.r === o.r.id ? null : o.r.id; render(); });
+  const all = REG.map(r => ({r, ...metric({r:r.id, y})}));
+  const big = all.slice().sort((a, b) => b.rev - a.rev)[0], fast = all.slice().sort((a, b) => b.yoy - a.yoy)[0], ws = all.slice().sort((a, b) => b.white / b.tam - a.white / a.tam)[0], low = all.slice().sort((a, b) => a.pen - b.pen)[0];
+  setHeadline(`${esc(big.r.name)} is ${fmtP(big.rev / total, 0)} of revenue; <em>${esc(fast.r.name)}</em> is growing fastest at ${fmtD(fast.yoy)}.`,
+    `Lowest patient penetration is in <b>${esc(low.r.name)}</b> (${fmtP(low.pen)}) — the biggest under-served market. ${esc(ws.r.name)} has the highest share of uncaptured market (${fmtP(ws.white / ws.tam, 0)}).`);
+}
+
+function focusRows(y) {
+  const rows = productRows(y).map(r => ({...r, opp: agg(sel({k:r.x.id, y:6, p:null, u:null})).rev - r.rev}));
+  const nz = (k, f) => { const v = rows.map(f), mn = Math.min(...v), mx = Math.max(...v); return r => (f(r) - mn) / ((mx - mn) || 1); };
+  const a = nz('tg', r => r.x.tamg), b = nz('w', r => r.white), c = nz('g', r => r.yoy), d = nz('m', r => r.x.margin);
+  rows.forEach(r => { r.score = Math.round(100 * (.35 * a(r) + .25 * b(r) + .2 * c(r) + .2 * d(r))); r.rec = r.score >= 55 ? 'Invest to win' : r.score >= 40 ? 'Grow selectively' : r.score >= 25 ? 'Defend core' : 'Optimize / harvest'; });
+  return rows;
+}
+function renderMarkets() {
+  const t = T(), y = state.y, rows = focusRows(y), pc = PORT.filter(p => !state.p || p.id === state.p).map(p => ({...p, color:t.pal[p.idx]}));
+  legend('legMx', pc);
+  const XM = 0.08, YM = 0.20;
+  const maxRev = Math.max(...rows.map(r => r.rev));
+  const c = chart('cMatrix');
+  const labelSet = new Set(rows.slice().sort((a, b) => b.rev - a.rev).slice(0, 6).map(r => r.x.id));
+  c.setOption({...base(), grid:{left:12, right:24, top:34, bottom:30, containLabel:true},
+    tooltip:{...base().tooltip, formatter: p => { const r = p.data.r; return `<b>${esc(r.x.name)}</b><div style="color:${t.ink3}">${byId(r.x.p).name}</div>` + ttRow(prodColor(r.x), 'Revenue', fmt$(r.rev)) + ttRow('transparent', 'Market growth', fmtP(r.x.tamg)) + ttRow('transparent', 'Market share', fmtP(r.share)) + ttRow('transparent', 'Focus score', r.score); }},
+    xAxis:{type:'value', name:'Market growth (CAGR) →', nameLocation:'middle', nameGap:26, nameTextStyle:{color:t.ink3, fontSize:11}, min:0, max:v => Math.ceil(v.max * 20) / 20 + .02, ...axisCommon(t), axisLabel:{color:t.ink3, fontSize:11, formatter:v => fmtP(v, 0)}},
+    yAxis:{type:'value', name:'Our market share →', nameTextStyle:{color:t.ink3, fontSize:11, align:'left'}, min:0, max:v => Math.min(1, Math.ceil(v.max * 10) / 10 + .05), ...axisCommon(t), axisLabel:{color:t.ink3, fontSize:11, formatter:v => fmtP(v, 0)}},
+    series:[{type:'scatter', data: rows.map(r => ({value:[r.x.tamg, r.share], r, symbolSize: 10 + 34 * Math.sqrt(r.rev / maxRev), itemStyle:{color:prodColor(r.x), opacity:.78, borderColor:t.surface, borderWidth:2},
+        label:{show:labelSet.has(r.x.id), formatter:r.x.name, position:'right', color:t.ink2, fontSize:11}})),
+      emphasis:{scale:1.1, label:{show:true}}, labelLayout:{hideOverlap:true},
+      markLine:{silent:true, symbol:'none', lineStyle:{color:t.line2, type:'dashed'}, label:{show:false}, data:[{xAxis:XM}, {yAxis:YM}]},
+      markArea:{silent:true, itemStyle:{color:'transparent'}, label:{color:t.ink3, fontSize:11, fontWeight:600},
+        data:[[{xAxis:XM, yAxis:YM, name:'LEAD & INVEST', label:{position:'insideTopRight'}}, {xAxis:'max', yAxis:'max'}], [{xAxis:XM, yAxis:0, name:'BUILD POSITION', label:{position:'insideBottomRight'}}, {xAxis:'max', yAxis:YM}],
+              [{xAxis:0, yAxis:YM, name:'DEFEND & FUND', label:{position:'insideTopLeft'}}, {xAxis:XM, yAxis:'max'}], [{xAxis:0, yAxis:0, name:'RATIONALIZE', label:{position:'insideBottomLeft'}}, {xAxis:XM, yAxis:YM}]]}}]}, true);
+  c.on('click', p => p.data && p.data.r && openProduct(p.data.r.x.id));
+
+  const top = rows.slice().sort((a, b) => b.opp - a.opp).slice(0, 10).reverse();
+  const c2 = chart('cOpp');
+  c2.setOption({...base(), grid:{left:8, right:60, top:8, bottom:8, containLabel:true},
+    tooltip:{...base().tooltip, formatter: p => { const r = top[p.dataIndex]; return `<b>${esc(r.x.name)}</b>` + ttRow(prodColor(r.x), 'FY26 → FY28', '+' + fmt$(r.opp)) + ttRow('transparent', 'Market growth', fmtP(r.x.tamg)); }},
+    xAxis:{type:'value', show:false}, yAxis:{type:'category', data:top.map(r => r.x.name), ...axisCommon(t), axisLabel:{color:t.ink2, fontSize:11.5, width:150, overflow:'truncate'}},
+    series:[{type:'bar', barWidth:'58%', data:top.map(r => ({value:r.opp, itemStyle:{color:prodColor(r.x), borderRadius:[0, 4, 4, 0]}})), label:{show:true, position:'right', color:t.ink2, fontSize:11, formatter:p => '+' + fmt$(p.value)}}]}, true);
+  c2.on('click', p => openProduct(top[p.dataIndex].x.id));
+
+  const recCls = r => r === 'Invest to win' ? 'invest' : r === 'Grow selectively' ? 'grow' : '';
+  const sorted = sortRows(rows.slice(), state.focusSort, (r, k) => k === 'name' ? r.x.name : k === 'tamg' ? r.x.tamg : k === 'margin' ? r.x.margin : r[k]);
+  table('tFocus', [
+    {k:'name', h:'Product', l:1, f:r => `<span style="display:inline-flex;gap:8px;align-items:center"><i class="dot" style="background:${prodColor(r.x)}"></i>${esc(r.x.name)}</span>`},
+    {k:'score', h:'Focus score', f:r => `<span class="score"><i><b style="width:${r.score}%"></b></i>${r.score}</span>`},
+    {k:'rec', h:'Recommendation', l:1, f:r => `<span class="pill ${recCls(r.rec)}">${r.rec}</span>`},
+    {k:'tamg', h:'Mkt growth', f:r => fmtP(r.x.tamg)}, {k:'share', h:'Share', f:r => fmtP(r.share)}, {k:'yoy', h:'Our growth', f:r => `<span class="${cls(r.yoy)}">${fmtD(r.yoy)}</span>`},
+    {k:'white', h:'White space', f:r => fmt$(r.white)}, {k:'opp', h:'FY28 upside', f:r => '+' + fmt$(r.opp)}, {k:'margin', h:'Margin', f:r => fmtP(r.x.margin, 0)},
+  ], sorted, state.focusSort, s => { state.focusSort = s; renderMarkets(); }, r => openProduct(r.x.id));
+
+  const inv = rows.filter(r => r.rec === 'Invest to win').sort((a, b) => b.score - a.score), topOpp = top[top.length - 1];
+  setHeadline(`Focus investment on <em>${inv.slice(0, 3).map(r => esc(r.x.name)).join(', ') || 'top-scoring products'}</em>.`,
+    `${inv.length} of ${rows.length} products score as “Invest to win”. Biggest forecast upside: <b>${esc(topOpp.x.name)}</b> (+${fmt$(topOpp.opp)} by FY28). Products in the lower-left quadrant are candidates for portfolio rationalization.`);
+}
+
+function projectsFiltered() { return PROJECTS.filter(p => (!state.p || p.p === state.p) && (!state.r || p.r === state.r) && (!state.u || true)); }
+function renderIntake() {
+  const t = T(), ps = projectsFiltered();
+  const pw = state.p ? ({CV:.36, NS:.27, MS:.26, DB:.11})[state.p] : 1, rw = state.r ? REG.find(r => r.id === state.r).tam * 1.1 : 1;
+  const funnel = FUNNEL_BASE.map(v => Math.max(1, Math.round(v * pw * rw)));
+  const npv = ps.reduce((a, p) => a + p.npv, 0), inv = ps.reduce((a, p) => a + p.invest, 0);
+  const cyc = STAGES.slice(0, 5).map((s, i) => { const d = PROJECTS.filter(p => p.dur[i] != null && (!state.p || p.p === state.p)).map(p => p.dur[i]); return d.length ? Math.round(d.reduce((a, b) => a + b, 0) / d.length) : TARGET[i]; });
+  const conv = funnel[4] / funnel[0];
+  const slowI = cyc.map((d, i) => d / TARGET[i]).reduce((bi, v, i, a) => v > a[bi] ? i : bi, 0);
+  document.getElementById('intakeKpis').innerHTML = [
+    ['Ideas submitted (YTD)', funnel[0], 'Requests entering intake'], ['Approved to fund', funnel[4], `${fmtP(conv, 0)} intake → approval`], ['Active projects', ps.length, `${ps.filter(p => p.si >= 5).length} in development / launch`],
+    ['Pipeline NPV', fmt$(npv), `${fmt$(inv)} investment required`], ['Avg. time to approval', cyc.reduce((a, b) => a + b, 0) + ' days', `Target ${TARGET.slice(0, 5).reduce((a, b) => a + b, 0)} days`]
+  ].map(k => `<div class="kpi"><div class="lab">${k[0]}</div><div class="val num">${k[1]}</div><div class="delta">${k[2]}</div></div>`).join('');
+
+  const c = chart('cFunnel');
+  c.setOption({...base(), grid:{left:8, right:90, top:8, bottom:8, containLabel:true},
+    tooltip:{...base().tooltip, formatter: p => `<b>${STAGES[p.dataIndex]}</b>` + ttRow(t.accent, 'Projects', funnel[p.dataIndex]) + (p.dataIndex ? ttRow('transparent', 'Conversion from prior', fmtP(funnel[p.dataIndex] / funnel[p.dataIndex - 1], 0)) : '')},
+    xAxis:{type:'value', show:false}, yAxis:{type:'category', inverse:true, data:STAGES, ...axisCommon(t), axisLabel:{color:t.ink2, fontSize:12}},
+    series:[{type:'bar', barWidth:'62%', data: funnel.map((v, i) => ({value:v, itemStyle:{color: echarts.color.lerp(i / 6, [t.pal[0], t.pal[2]]), opacity: state.stage == null || state.stage === i ? 1 : .3, borderRadius:[0, 4, 4, 0]}})),
+      label:{show:true, position:'right', color:t.ink2, fontSize:11, formatter: p => p.value + (p.dataIndex ? `  ·  ${fmtP(p.value / funnel[p.dataIndex - 1], 0)}` : '')}}]}, true);
+  c.on('click', p => { state.stage = state.stage === p.dataIndex ? null : p.dataIndex; renderIntake(); });
+
+  const c2 = chart('cCycle');
+  c2.setOption({...base(), grid:{left:8, right:16, top:24, bottom:8, containLabel:true},
+    tooltip:{...base().tooltip, trigger:'axis', axisPointer:{type:'shadow', shadowStyle:{color:t.grid}}, formatter: ps => `<b>${ps[0].axisValue}</b>` + ttRow(t.accent, 'Actual', ps[0].value + ' days') + ttRow(t.ink3, 'Target', TARGET[ps[0].dataIndex] + ' days')},
+    xAxis:{type:'category', data:STAGES.slice(0, 5), ...axisCommon(t), axisLabel:{color:t.ink2, fontSize:11, interval:0, width:80, overflow:'break'}},
+    yAxis:{type:'value', ...axisCommon(t), axisLabel:{color:t.ink3, fontSize:11, formatter:'{value}d'}},
+    series:[{type:'bar', barWidth:'48%', data:cyc.map((v, i) => ({value:v, itemStyle:{color: i === slowI ? t.pal[2] : t.pal[0], borderRadius:[4, 4, 0, 0]}})), label:{show:true, position:'top', color:t.ink2, fontSize:11, formatter:'{c}d'}},
+      {type:'line', data:TARGET.slice(0, 5), symbol:'circle', symbolSize:8, lineStyle:{color:t.ink3, type:'dashed', width:2}, itemStyle:{color:t.ink3, borderColor:t.surface, borderWidth:2}, z:5}]}, true);
+
+  const mi = PORT.map((p, i) => i).filter(i => !state.p || PORT[i].id === state.p);
+  const sub = MONTHS.map((_, m) => mi.reduce((a, i) => a + MONTHLY[i][m].s, 0) * (state.r ? 1 : 1)), app = MONTHS.map((_, m) => mi.reduce((a, i) => a + MONTHLY[i][m].a, 0));
+  legend('legMonthly', [{name:'Submitted', color:t.pal[0]}, {name:'Approved', color:t.pal[2]}]);
+  const c3 = chart('cMonthly');
+  c3.setOption({...base(), grid:{left:8, right:16, top:16, bottom:8, containLabel:true},
+    tooltip:{...base().tooltip, trigger:'axis', axisPointer:{type:'line', lineStyle:{color:t.line2}}, formatter: ps => `<b>${ps[0].axisValue}</b>` + ps.map(p => ttRow(p.color, p.seriesName, p.value)).join('')},
+    xAxis:{type:'category', data:MONTHS, boundaryGap:false, ...axisCommon(t)}, yAxis:{type:'value', ...axisCommon(t), minInterval:1},
+    series:[{name:'Submitted', type:'line', smooth:.3, data:sub, symbol:'circle', symbolSize:8, showSymbol:false, lineStyle:{width:2, color:t.pal[0]}, itemStyle:{color:t.pal[0]}, areaStyle:{color:new echarts.graphic.LinearGradient(0, 0, 0, 1, [{offset:0, color:t.pal[0] + '33'}, {offset:1, color:t.pal[0] + '00'}])}},
+      {name:'Approved', type:'line', smooth:.3, data:app, symbol:'circle', symbolSize:8, showSymbol:false, lineStyle:{width:2, color:t.pal[2]}, itemStyle:{color:t.pal[2]}}]}, true);
+
+  const q = document.getElementById('projSearch').value.toLowerCase();
+  document.getElementById('projSearch').oninput = () => renderIntake();
+  document.getElementById('stageClear').hidden = state.stage == null;
+  document.getElementById('stageClear').onclick = () => { state.stage = null; renderIntake(); };
+  document.getElementById('projHint').textContent = (state.stage != null ? `Showing stage: ${STAGES[state.stage]} · ` : '') + 'Click a row for the stage-gate view';
+  const list = sortRows(ps.filter(p => (state.stage == null || p.si === state.stage) && (p.name.toLowerCase().includes(q) || p.id.toLowerCase().includes(q))), state.projSort, (p, k) => k === 'port' ? byId(p.p).name : k === 'stage' ? p.si : p[k]);
+  table('tProj', [
+    {k:'id', h:'ID', l:1, f:p => `<span style="color:var(--ink-3)">${p.id}</span>`},
+    {k:'name', h:'Project', l:1, f:p => `<span style="display:inline-flex;gap:8px;align-items:center"><i class="dot" style="background:${t.pal[PORT.findIndex(x => x.id === p.p)]}"></i>${esc(p.name)}</span>`},
+    {k:'port', h:'Portfolio', l:1, f:p => byId(p.p).name}, {k:'r', h:'Region', l:1, f:p => regShort(p.r)},
+    {k:'stage', h:'Stage', l:1, f:p => `<span class="pill ${p.si >= 4 ? 'invest' : p.si >= 2 ? 'grow' : ''}">${p.stage}</span>`},
+    {k:'npv', h:'NPV', f:p => fmt$(p.npv)}, {k:'peak', h:'Peak sales', f:p => fmt$(p.peak)}, {k:'invest', h:'Investment', f:p => fmt$(p.invest)},
+    {k:'fit', h:'Strategic fit', f:p => `<span class="score"><i><b style="width:${p.fit}%"></b></i>${p.fit}</span>`}, {k:'risk', h:'Risk', f:p => p.risk},
+  ], list, state.projSort, s => { state.projSort = s; renderIntake(); }, p => openProject(p));
+
+  setHeadline(`<em>${ps.length} active projects</em> worth ${fmt$(npv)} NPV; ${fmtP(conv, 0)} of ideas reach funding approval.`,
+    `<b>${STAGES[slowI]}</b> is the bottleneck gate — averaging ${cyc[slowI]} days against a ${TARGET[slowI]}-day target. Click a funnel stage to see the projects sitting in it.`);
+}
+
+/* =========================================================
+   5. MODALS (product + project drill-through)
+   ========================================================= */
+const modal = document.getElementById('modal');
+document.getElementById('mClose').onclick = () => modal.close();
+modal.addEventListener('click', e => { if (e.target === modal) modal.close(); });
+modal.addEventListener('close', () => ['mRev', 'mShare'].forEach(id => { const el = document.getElementById(id); if (el) { const c = echarts.getInstanceByDom(el); c && c.dispose(); } }));
+
+function openProduct(id) {
+  const x = byId(id), t = T(), y = state.y, m = metric({k:id, y, p:null, u:null}), f = focusRows(y).find(r => r.x.id === id) || {};
+  document.getElementById('mTitle').textContent = x.name;
+  document.getElementById('mSub').textContent = `${byId(x.p).name} › ${byId(x.u).name} · ${YEARS[y]}${state.r ? ' · ' + regShort(state.r) : ''}`;
+  document.getElementById('mBody').innerHTML = `<div class="mk">
+    <div><span>Revenue</span><b>${fmt$(m.rev)}</b><span class="${cls(m.yoy)}">${fmtD(m.yoy)} YoY</span></div>
+    <div><span>Market size</span><b>${fmt$(m.tam)}</b><span>${fmtP(x.tamg)} market CAGR</span></div>
+    <div><span>Market share</span><b>${fmtP(m.share)}</b><span>Penetration ${fmtP(m.pen)}</span></div>
+    <div><span>White space</span><b>${fmt$(m.white)}</b><span>Gross margin ${fmtP(x.margin, 0)}</span></div>
+    <div><span>Focus score</span><b>${f.score ?? '–'}</b><span>${f.rec || ''}</span></div></div>
+    <div class="grid"><div class="card s7" style="box-shadow:none"><h3>Revenue by region</h3><p class="hint">FY22–FY28 · forecast lighter</p><div class="legend" id="legM"></div><div class="chart short" id="mRev"></div></div>
+    <div class="card s5" style="box-shadow:none"><h3>Market share trend</h3><p class="hint">Our revenue ÷ addressable market</p><div class="chart short" id="mShare"></div></div></div>`;
+  modal.showModal();
+  const regs = REG.filter(r => !state.r || r.id === state.r).map((r, i) => ({...r, color:t.pal[REG.indexOf(r)]}));
+  legend('legM', regs.map(r => ({name:r.short || r.name, color:r.color})));
+  const c = echarts.init(document.getElementById('mRev'));
+  c.setOption({...base(), tooltip:{...base().tooltip, trigger:'axis', axisPointer:{type:'shadow', shadowStyle:{color:t.grid}}, formatter: ps => `<b>${ps[0].axisValue}</b>` + ps.slice().reverse().map(p => ttRow(regs[p.seriesIndex].color, regs[p.seriesIndex].short || regs[p.seriesIndex].name, fmt$(p.value))).join('')},
+    xAxis:{type:'category', data:YEARS, ...axisCommon(t)}, yAxis:{type:'value', ...axisCommon(t), axisLabel:{color:t.ink3, fontSize:11, formatter:v => fmt$(v)}},
+    series: regs.map((r, i) => ({type:'bar', stack:'s', barMaxWidth:36, itemStyle:{borderColor:t.surface, borderWidth:1}, data:YEARS.map((_, yi) => ({value:agg(sel({k:id, r:r.id, y:yi, p:null, u:null})).rev, itemStyle:{color:r.color, opacity:yi >= ACTUAL ? .45 : 1, borderRadius:i === regs.length - 1 ? [4, 4, 0, 0] : 0}}))}))});
+  const c2 = echarts.init(document.getElementById('mShare'));
+  c2.setOption({...base(), tooltip:{...base().tooltip, trigger:'axis', formatter: ps => `<b>${ps[0].axisValue}</b>` + ttRow(t.accent, 'Share', fmtP(ps[0].value))},
+    xAxis:{type:'category', data:YEARS, boundaryGap:false, ...axisCommon(t)}, yAxis:{type:'value', ...axisCommon(t), scale:true, axisLabel:{color:t.ink3, fontSize:11, formatter:v => fmtP(v, 0)}},
+    series:[{type:'line', smooth:.3, data:YEARS.map((_, yi) => agg(sel({k:id, y:yi, p:null, u:null})).share), symbol:'circle', symbolSize:8, lineStyle:{width:2, color:t.accent}, itemStyle:{color:t.accent, borderColor:t.surface, borderWidth:2},
+      areaStyle:{color:new echarts.graphic.LinearGradient(0, 0, 0, 1, [{offset:0, color:t.accent + '30'}, {offset:1, color:t.accent + '00'}])},
+      markArea:{silent:true, itemStyle:{color:t.grid}, data:[[{xAxis:'FY26'}, {xAxis:'FY28'}]]}}]});
+}
+function openProject(p) {
+  document.getElementById('mTitle').textContent = p.name;
+  document.getElementById('mSub').textContent = `${p.id} · ${byId(p.p).name} · ${regName(p.r)} · Sponsor ${p.sponsor}`;
+  document.getElementById('mBody').innerHTML = `<div class="stages">${STAGES.map((s, i) => `<div class="${i <= p.si ? 'done' : ''}"></div>`).join('')}</div>
+    <div class="stagelbl">${STAGES.map((s, i) => `<span style="${i === p.si ? 'color:var(--ink);font-weight:700' : ''}">${s}</span>`).join('')}</div>
+    <div class="mk" style="margin-top:18px">
+      <div><span>Current stage</span><b>${p.stage}</b><span>${p.days} days in stage (target ${TARGET[p.si]})</span></div>
+      <div><span>NPV</span><b>${fmt$(p.npv)}</b><span>Peak sales ${fmt$(p.peak)}</span></div>
+      <div><span>Investment</span><b>${fmt$(p.invest)}</b><span>ROI ${(p.npv / p.invest).toFixed(1)}×</span></div>
+      <div><span>Strategic fit</span><b>${p.fit}/100</b><span>Risk: ${p.risk}</span></div></div>
+    <h3 style="margin:8px 0">Gate history</h3>
+    <table><thead><tr><th class="l">Gate</th><th>Days</th><th>Target</th><th>Variance</th></tr></thead><tbody>${STAGES.map((s, i) => p.dur[i] != null ? `<tr style="cursor:default"><td class="l">${s}</td><td>${p.dur[i]}</td><td>${TARGET[i]}</td><td class="${p.dur[i] <= TARGET[i] ? 'up' : 'down'}">${p.dur[i] - TARGET[i] > 0 ? '+' : ''}${p.dur[i] - TARGET[i]}d</td></tr>` : '').join('') || '<tr><td class="l" colspan="4">No gates completed yet</td></tr>'}</tbody></table>`;
+  modal.showModal();
+}
+
+/* =========================================================
+   6. RENDER, THEME, PRESENT, KEYS
+   ========================================================= */
+function render() {
+  renderChrome();
+  ({overview:renderOverview, portfolio:renderPortfolio, geo:renderGeo, markets:renderMarkets, intake:renderIntake})[state.tab]();
+  try { location.hash = state.tab; } catch (e) {}
+}
+function setTheme(th) {
+  document.documentElement.setAttribute('data-theme', th);
+  try { localStorage.setItem('pi-theme', th); } catch (e) {}
+  Object.keys(charts).forEach(k => { charts[k].dispose(); delete charts[k]; });
+  render();
+}
+document.getElementById('themeBtn').onclick = () => {
+  const cur = document.documentElement.getAttribute('data-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  setTheme(cur === 'dark' ? 'light' : 'dark');
+};
+function present(on) {
+  document.body.classList.toggle('presenting', on);
+  if (on) { document.documentElement.requestFullscreen?.().catch(() => {}); window.scrollTo({top:0}); }
+  else if (document.fullscreenElement) document.exitFullscreen?.().catch(() => {});
+}
+document.getElementById('presentBtn').onclick = () => present(!document.body.classList.contains('presenting'));
+document.getElementById('pPrev').onclick = () => step(-1);
+document.getElementById('pNext').onclick = () => step(1);
+document.getElementById('pExit').onclick = () => present(false);
+document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement) document.body.classList.remove('presenting'); });
+document.addEventListener('keydown', e => {
+  if (modal.open || /INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) return;
+  if (e.key === 'ArrowRight' || e.key === 'PageDown') { step(1); e.preventDefault(); }
+  else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { step(-1); e.preventDefault(); }
+  else if (e.key === 'Backspace') { zoomOut(); e.preventDefault(); }
+  else if (e.key.toLowerCase() === 'p') present(!document.body.classList.contains('presenting'));
+  else if (e.key === 'Escape') present(false);
+  else if (/^[1-5]$/.test(e.key)) setTab(TABS[+e.key - 1][0]);
+});
+
+try { const th = localStorage.getItem('pi-theme'); if (th) document.documentElement.setAttribute('data-theme', th); } catch (e) {}
+buildChrome();
+const h = location.hash.slice(1); if (TABS.some(t => t[0] === h)) state.tab = h;
+render();
+</script>
+</body>
+</html>
