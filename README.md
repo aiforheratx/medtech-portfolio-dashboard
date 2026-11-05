@@ -9,7 +9,7 @@ Interactive, presentation-ready portfolio dashboard for a medical-device busines
 ## Views
 0. **Executive Summary** – one-glance page for VP / CTO: hero revenue, 3 things to know, portfolio health, where we will win, innovation pipeline, decisions needed (glass design)
 1. **Performance Overview** – revenue, vs. plan, market size, share, penetration, white space, pipeline NPV; portfolio cards; trend + forecast; regions
-2. **Portfolio & Therapies** – zoomable portfolio map (portfolio → operating unit → product) and sortable product scorecard
+2. **Portfolio & Therapies** – one-screen column view: Portfolios → Therapies → Products → detail panel (growth vs. market, share status, trend, regional mix); portfolio map and full product table open as pop-ups
 3. **Geography** – world revenue map, regional mix, regional performance
 4. **Markets & Focus** – where-to-play matrix (market growth vs. share), FY28 growth opportunity, focus score & recommendations
 5. **Project Intake** – stage-gate funnel, gate cycle time vs. target, monthly intake, project pipeline

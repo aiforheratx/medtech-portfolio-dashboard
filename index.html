@@ -217,6 +217,55 @@ kbd{font:600 11px ui-monospace,Menlo,monospace;background:var(--surface-2);borde
 .tagline b{display:block;font-size:18px}
 .tagline span{font-size:11.5px;color:var(--ink-3);font-weight:600}
 
+/* Portfolio columns */
+.pf-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.pf-key{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--ink-2)}
+.pf-key span{display:inline-flex;align-items:center;gap:6px}
+.tick{display:inline-block;width:2px;height:12px;background:var(--ink-3);border-radius:1px}
+.vd{font-size:11px;font-weight:700}
+.vd.up{color:var(--up)} .vd.flat{color:var(--ink-3)} .vd.warn{color:var(--warn)}
+.pf-cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1.25fr);gap:14px;min-height:440px}
+.pf-col{display:flex;flex-direction:column;padding:14px;min-height:0}
+.pf-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:2px 4px 10px}
+.pf-h h3{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pf-h span{font-size:12px;color:var(--ink-3);font-weight:600;white-space:nowrap}
+.pf-list{display:flex;flex-direction:column;gap:6px;overflow:auto;min-height:0;flex:1}
+.pr{display:block;width:100%;text-align:left;border:1px solid transparent;background:transparent;border-radius:14px;padding:9px 12px;cursor:pointer;transition:background .15s,border-color .15s;position:relative}
+.pr:hover{background:var(--surface-2)}
+.pr.on{background:var(--accent-soft);border-color:color-mix(in srgb,var(--accent) 30%,transparent)}
+.pr.on::after{content:"›";position:absolute;right:-9px;top:50%;transform:translateY(-50%);font-size:18px;color:var(--accent);font-weight:700}
+.pf-col:nth-child(3) .pr.on::after{display:none}
+.pr-top{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.pr-top .nm{display:flex;align-items:center;gap:8px;font-weight:650;font-size:13.5px;min-width:0}
+.pr-top .nm span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pr-top .mx{font-size:11px;color:var(--ink-3);font-weight:600;margin-right:6px}
+.pr-top b{white-space:nowrap;font-size:15px;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.pr .gbar{margin:9px 0 6px;height:6px}
+.pr .gbar i{top:-3px;bottom:-3px}
+.pr-meta{display:flex;justify-content:space-between;gap:8px;white-space:nowrap;font-size:11.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.pr-meta .g{font-weight:700}
+.pr.total{border:1px dashed var(--line-2)}
+.pf-detail{gap:10px;overflow:auto}
+.dt-x{border:0;background:var(--accent-soft);color:var(--accent);font-weight:650;font-size:12px;border-radius:999px;padding:4px 10px;cursor:pointer;white-space:nowrap}
+.dt-eyebrow{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3)}
+.dt-title{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.dt-title h3{font-size:20px;letter-spacing:-.02em;margin:2px 0 0}
+.dt-badge{display:inline-flex;gap:5px;align-items:center;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--surface-2);white-space:nowrap}
+.dt-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.dt-stats div{background:var(--surface-2);border-radius:12px;padding:7px 11px}
+.dt-stats b{display:block;font-size:17px;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.dt-stats span{font-size:11px;color:var(--ink-3);font-weight:600}
+.dt-chart{height:100%;min-height:100px;cursor:pointer}
+.dt-cw{flex:1;min-height:120px;display:flex;flex-direction:column}
+.mix{display:flex;height:10px;border-radius:5px;overflow:hidden;gap:2px}
+.mix span{display:block;height:100%}
+.mix-l{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11.5px;color:var(--ink-2);margin-top:6px}
+.mix-l span{display:inline-flex;gap:5px;align-items:center}
+.dt-actions{display:flex;gap:8px;flex-wrap:wrap}
+@media (max-width:1100px){.pf-cols{grid-template-columns:1fr 1fr;height:auto!important}.pf-col{max-height:none}.pr.on::after{display:none}}
+@media (max-width:640px){.pf-cols{grid-template-columns:1fr}}
+@media (max-height:820px) and (min-width:1101px){body[data-tab=portfolio] .sub{display:none} body[data-tab=portfolio] .note{padding:4px 12px;margin-bottom:8px} body[data-tab=portfolio] .headline{font-size:24px} body[data-tab=portfolio] .pf-bar{margin-bottom:8px}}
+
 /* Present mode */
 .pnav{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:40;display:none;align-items:center;gap:10px;background:var(--surface-glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:999px;padding:6px 8px}
 .pnav button{border:0;background:transparent;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:16px}
@@ -315,20 +364,15 @@ section.view{animation:fade .35s ease}
 
   <!-- 2 PORTFOLIO -->
   <section class="view" id="v-portfolio" hidden>
-    <div class="grid">
-      <div class="card s12">
-        <div class="card-head">
-          <div><h3>Portfolio map</h3><p class="hint">Area = revenue · click a block to zoom in · click a product for its profile</p></div>
-          <div class="seg" id="tmMode"><button data-m="entity" aria-pressed="true">Color: Portfolio</button><button data-m="growth" aria-pressed="false">Color: YoY growth</button></div>
-        </div>
-        <div id="legTm" class="legend"></div>
-        <div class="chart tall" id="cTreemap"></div>
-      </div>
-      <div class="card s12">
-        <div class="card-head"><div><h3>Product scorecard</h3><p class="hint">Click a column to sort · click a row for the product profile</p></div>
-          <div class="toolbar"><input class="search" id="prodSearch" placeholder="Search products…" aria-label="Search products"></div></div>
-        <div class="tbl-wrap"><table id="tProd"></table></div>
-      </div>
+    <div class="pf-bar">
+      <div class="pf-key"><span><b class="vd up">▲</b> Gaining share</span><span><b class="vd flat">●</b> In line with market</span><span><b class="vd warn">▼</b> Losing share</span><span><i class="tick"></i> Market growth</span></div>
+      <div class="toolbar"><button class="btn" id="openMap">Portfolio map ↗</button><button class="btn" id="openTable">All products ↗</button></div>
+    </div>
+    <div class="pf-cols" id="pfCols">
+      <div class="card pf-col"><div class="pf-h"><h3>Portfolios</h3><span id="pfH1"></span></div><div class="pf-list" id="pfL1"></div></div>
+      <div class="card pf-col"><div class="pf-h"><h3 id="pfT2">Therapies</h3><span id="pfH2"></span></div><div class="pf-list" id="pfL2"></div></div>
+      <div class="card pf-col"><div class="pf-h"><h3 id="pfT3">Products</h3><span id="pfH3"></span></div><div class="pf-list" id="pfL3"></div></div>
+      <div class="card pf-col pf-detail" id="pfD"></div>
     </div>
   </section>
 
@@ -502,7 +546,7 @@ const MONTHLY = PORT.map(p => MONTHS.map((m, i) => { const s = Math.round((2 + r
 /* =========================================================
    2. STATE & HELPERS
    ========================================================= */
-const state = {tab:'exec', y:4, r:null, p:null, u:null, tm:'entity', prodSort:['rev','desc'], regSort:['rev','desc'], focusSort:['score','desc'], projSort:['npv','desc'], stage:null};
+const state = {tab:'exec', y:4, r:null, p:null, u:null, tm:'entity', prodSort:['rev','desc'], regSort:['rev','desc'], focusSort:['score','desc'], projSort:['npv','desc'], stage:null, pk:null};
 const TABS = [['exec','Executive Summary'],['overview','Performance Overview'],['portfolio','Portfolio & Therapies'],['geo','Geography'],['markets','Markets & Focus'],['intake','Project Intake']];
 
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
@@ -544,7 +588,7 @@ function drill(key, id) {
   else if (key === 'k') return openProduct(id);
   render();
 }
-function zoomOut() { if (state.u) state.u = null; else if (state.p) state.p = null; else if (state.r) state.r = null; else return; render(); }
+function zoomOut() { if (state.pk) state.pk = null; else if (state.u) state.u = null; else if (state.p) state.p = null; else if (state.r) state.r = null; else return; render(); }
 
 function spark(vals, color) {
   const w = 100, h = 30, mn = Math.min(...vals), mx = Math.max(...vals), rg = mx - mn || 1;
@@ -778,57 +822,158 @@ function table(el, cols, rows, sortKey, onSort, onRow) {
   tb.querySelector('tbody').onclick = e => { const tr = e.target.closest('tr'); if (tr) onRow(rows[+tr.dataset.i]); };
 }
 
+function entInfo(key, id, y) {
+  const f = key === 'all' ? {p:null, u:null, k:null} : {p:null, u:null, k:null, [key]:id};
+  const m = metric({...f, y}), pt = agg(sel({...f, y:y - 1})).tam, mk = pt ? m.tam / pt - 1 : 0;
+  const prods = key === 'k' ? [byId(id)] : key === 'all' ? PRODUCTS : PRODUCTS.filter(x => x[key] === id);
+  let mr = 0, rv = 0; prods.forEach(x => { const r = agg(sel({k:x.id, p:null, u:null, y})).rev; mr += x.margin * r; rv += r; });
+  return {m, mk, margin: rv ? mr / rv : 0, f};
+}
+const verdict = (g, mk) => { const d = g - mk; return d >= .01 ? {c:'up', t:'Gaining share', i:'▲'} : d >= -.01 ? {c:'flat', t:'In line', i:'●'} : {c:'warn', t:'Losing share', i:'▼'}; };
+function pfRow(key, id, name, color, info, on, total, gmax, extra) {
+  const v = verdict(info.m.yoy, info.mk), w = Math.max(0, info.m.yoy) / gmax * 100, tk = Math.max(0, info.mk) / gmax * 100;
+  return `<button class="pr ${on ? 'on' : ''} ${extra || ''}" data-key="${key}" data-id="${id}" title="${esc(name)}">
+    <div class="pr-top"><span class="nm"><i class="dot" style="background:${color}"></i><span>${esc(name)}</span></span><b>${total ? `<span class="mx">${fmtP(info.m.rev / total, 0)}</span>` : ''}${fmt$(info.m.rev)}</b></div>
+    <div class="gbar"><span style="width:${Math.min(100, w)}%;background:${color}"></span><i style="left:${Math.min(100, tk)}%"></i></div>
+    <div class="pr-meta"><span><span class="g ${cls(info.m.yoy)}">${fmtD(info.m.yoy)}</span> · mkt ${fmtD(info.mk, 0)}</span><span class="vd ${v.c}">${v.i} ${v.t}</span></div></button>`;
+}
+function fitPf() {
+  const el = document.getElementById('pfCols');
+  if (!el || innerWidth <= 1100) { if (el) el.style.height = ''; return; }
+  el.style.height = Math.max(360, innerHeight - el.getBoundingClientRect().top - 20) + 'px';
+}
+addEventListener('resize', () => { if (state.tab === 'portfolio') fitPf(); });
+
 function renderPortfolio() {
   const t = T(), y = state.y;
-  document.querySelectorAll('#tmMode button').forEach(b => b.setAttribute('aria-pressed', b.dataset.m === state.tm));
-  document.getElementById('tmMode').onclick = e => { const b = e.target.closest('button'); if (b) { state.tm = b.dataset.m; renderPortfolio(); } };
-  const ch = children();
-  const growthColor = g => { // diverging: magenta (decline) ← grey → blue (growth)
-    const c = g >= 0 ? t.pal[0] : t.pal[4], k = Math.min(1, Math.abs(g) / (g >= 0 ? .2 : .06));
-    return echarts.color.lerp(k * .85 + .15, [t.ink3, c]);
+  const total = metric({y, p:null, u:null}).rev;
+  const ports = PORT.map(p => ({p, info: entInfo('p', p.id, y)})).sort((a, b) => b.info.m.rev - a.info.m.rev);
+  const sp = state.p || ports[0].p.id, P = byId(sp);
+  const units = UNITS.filter(u => u.p === sp).map(u => ({u, info: entInfo('u', u.id, y)})).sort((a, b) => b.info.m.rev - a.info.m.rev);
+  const su = state.u && byId(state.u).p === sp ? state.u : units[0].u.id, U = byId(su);
+  const prods = PRODUCTS.filter(x => x.u === su).map(x => ({x, info: entInfo('k', x.id, y)})).sort((a, b) => b.info.m.rev - a.info.m.rev);
+  if (state.pk && !prods.some(r => r.x.id === state.pk)) state.pk = null;
+  const focus = state.pk ? 'k' : state.u ? 'u' : state.p ? 'p' : 'all';
+  const gm = arr => Math.max(.12, ...arr.map(r => Math.max(r.info.m.yoy, r.info.mk))) * 1.1;
+
+  // column 1 — portfolios (+ total row)
+  const allInfo = entInfo('all', null, y);
+  document.getElementById('pfH1').textContent = `${PORT.length} · ${fmt$(total)}`;
+  document.getElementById('pfL1').innerHTML = pfRow('all', '', 'All portfolios', t.ink3, allInfo, focus === 'all', 0, gm(ports), 'total') +
+    ports.map(r => pfRow('p', r.p.id, r.p.name, t.pal[r.p.idx], r.info, sp === r.p.id && !!state.p, total, gm(ports))).join('');
+  // column 2 — therapies
+  document.getElementById('pfT2').textContent = 'Therapies · ' + P.name;
+  document.getElementById('pfH2').textContent = `${units.length} · ${fmt$(units.reduce((a, r) => a + r.info.m.rev, 0))}`;
+  const pTot = units.reduce((a, r) => a + r.info.m.rev, 0);
+  document.getElementById('pfL2').innerHTML = units.map(r => pfRow('u', r.u.id, r.u.name, t.pal[r.u.idx % 5], r.info, su === r.u.id && !!state.u, pTot, gm(units))).join('');
+  // column 3 — products
+  document.getElementById('pfT3').textContent = 'Products · ' + U.name;
+  const uTot = prods.reduce((a, r) => a + r.info.m.rev, 0);
+  document.getElementById('pfH3').textContent = `${prods.length} · ${fmt$(uTot)}`;
+  document.getElementById('pfL3').innerHTML = prods.map(r => pfRow('k', r.x.id, r.x.name, t.pal[r.x.idx % 5], r.info, state.pk === r.x.id, uTot, gm(prods))).join('');
+
+  document.getElementById('pfCols').onclick = e => {
+    const b = e.target.closest('.pr'); if (!b) return;
+    const k = b.dataset.key, id = b.dataset.id;
+    if (k === 'all') { state.p = state.u = state.pk = null; }
+    else if (k === 'p') { if (state.p === id && !state.u && !state.pk) { state.p = null; } else { state.p = id; state.u = null; state.pk = null; } }
+    else if (k === 'u') { state.p = sp; state.u = id; state.pk = null; }
+    else if (k === 'k') { state.p = sp; state.u = su; if (state.pk === id) return openProduct(id); state.pk = id; }
+    render();
   };
+
+  // detail panel
+  const dKey = focus, dId = focus === 'k' ? state.pk : focus === 'u' ? su : focus === 'p' ? sp : null;
+  const ent = dId ? byId(dId) : {name:'All portfolios'};
+  const info = entInfo(dKey, dId, y), v = verdict(info.m.yoy, info.mk);
+  const path = focus === 'k' ? `Product · ${P.name} › ${U.name}` : focus === 'u' ? `Therapy · ${P.name}` : focus === 'p' ? 'Portfolio' : 'Total company';
+  const color = focus === 'k' ? t.pal[ent.idx % 5] : focus === 'u' ? t.pal[ent.idx % 5] : focus === 'p' ? t.pal[ent.idx] : t.accent;
+  const regs = REG.map((r, i) => ({r, i, rev: agg(sel({...info.f, r:r.id, y})).rev}));
+  const rt = regs.reduce((a, r) => a + r.rev, 0);
+  const D = document.getElementById('pfD');
+  { const old = document.getElementById('cPfTrend'); if (old) { ro.unobserve(old); const oc = echarts.getInstanceByDom(old); oc && oc.dispose(); } }
+  D.innerHTML = `<div><div class="dt-eyebrow">${esc(path)}</div><div class="dt-title"><h3>${esc(ent.name)}</h3><button class="dt-x" id="dtOpen">Full analysis ↗</button></div><span class="dt-badge vd ${v.c}" style="margin-top:6px">${v.i} ${v.t}</span></div>
+    <div class="dt-stats">
+      <div><span>Revenue ${YEARS[y]}</span><b>${fmt$(info.m.rev)}</b><span class="${cls(info.m.yoy)}">${fmtD(info.m.yoy)} YoY</span></div>
+      <div><span>Market share</span><b>${fmtP(info.m.share)}</b><span>of ${fmt$(info.m.tam)} market</span></div>
+      <div><span>Market growth</span><b>${fmtD(info.mk)}</b><span>${info.m.yoy >= info.mk ? 'We are outgrowing it' : 'We trail the market'}</span></div>
+      <div><span>Gross margin</span><b>${fmtP(info.margin, 0)}</b><span>Penetration ${fmtP(info.m.pen)}</span></div>
+    </div>
+    <div class="dt-cw"><div class="dt-eyebrow" style="margin-bottom:4px">Revenue trend · click to expand</div><div class="dt-chart" id="cPfTrend"></div></div>
+    <div><div class="dt-eyebrow" style="margin-bottom:6px">Where it sells</div><div class="mix">${regs.map(r => `<span style="width:${r.rev / rt * 100}%;background:${t.pal[r.i]}" title="${r.r.name} ${fmtP(r.rev / rt, 0)}"></span>`).join('')}</div>
+      <div class="mix-l">${regs.map(r => `<span><i class="dot" style="background:${t.pal[r.i]}"></i>${r.r.short || r.r.name} ${fmtP(r.rev / rt, 0)}</span>`).join('')}</div></div>`;
+  const open = () => focus === 'all' ? openEntity('all', null) : openEntity(dKey, dId);
+  document.getElementById('dtOpen').onclick = open;
+  const tr = YEARS.map((_, i) => agg(sel({...info.f, y:i})).rev);
+  const c = echarts.init(document.getElementById('cPfTrend'));
+  ro.observe(document.getElementById('cPfTrend'));
+  c.setOption({...base(), grid:{left:4, right:18, top:10, bottom:2, containLabel:true},
+    tooltip:{...base().tooltip, trigger:'axis', axisPointer:{type:'line', lineStyle:{color:t.line2}}, formatter: ps => { const p = ps.find(q => q.value != null); return `<b>${p.axisValue}${p.dataIndex >= ACTUAL ? ' (forecast)' : ''}</b>` + ttRow(color, 'Revenue', fmt$(p.value)); }},
+    xAxis:{type:'category', data:YEARS, boundaryGap:false, ...axisCommon(t), axisLabel:{color:t.ink3, fontSize:10.5}},
+    yAxis:{type:'value', scale:true, splitNumber:3, ...axisCommon(t), axisLabel:{color:t.ink3, fontSize:10.5, formatter:v => fmt$(v)}},
+    series:[{type:'line', smooth:.35, data:tr.map((v, i) => i < ACTUAL ? v : null), showSymbol:false, lineStyle:{width:2.5, color}, itemStyle:{color},
+        areaStyle:{color:new echarts.graphic.LinearGradient(0, 0, 0, 1, [{offset:0, color:color + '38'}, {offset:1, color:color + '00'}])}},
+      {type:'line', smooth:.35, data:tr.map((v, i) => i >= ACTUAL - 1 ? v : null), showSymbol:false, lineStyle:{width:2.5, type:[5, 4], color}, itemStyle:{color}}]});
+  c.getZr().on('click', open);
+
+  requestAnimationFrame(fitPf);
+  const sub = focus === 'all' ? ports : focus === 'p' ? units : null;
+  const gain = (sub || prods).filter(r => verdict(r.info.m.yoy, r.info.mk).c === 'up').length, lose = (sub || prods).filter(r => verdict(r.info.m.yoy, r.info.mk).c === 'warn');
+  setHeadline(`<em>${esc(ent.name)}</em> · ${fmt$(info.m.rev)} · ${fmtD(info.m.yoy)} · ${v.t.toLowerCase()}`,
+    `Market growing ${fmtD(info.mk)}. Click left to right: portfolio → therapy → product. ${gain} of ${(sub || prods).length} ${focus === 'all' ? 'portfolios' : focus === 'p' ? 'therapies' : 'products'} shown are gaining share${lose.length ? '; watch <b>' + lose.map(r => esc((r.p || r.u || r.x).name)).join(', ') + '</b>' : ''}.`);
+}
+
+function openMap() {
+  disposeModal();
+  document.getElementById('mTitle').textContent = 'Portfolio map';
+  document.getElementById('mSub').textContent = `Area = revenue · ${YEARS[state.y]} · click a block to drill in`;
+  document.getElementById('mBody').innerHTML = `<div class="card-head" style="margin-bottom:6px"><div class="legend" id="legTm"></div><div class="seg" id="tmMode"><button data-m="entity">Color: Portfolio</button><button data-m="growth">Color: YoY growth</button></div></div><div class="chart" id="mTree" style="height:min(62vh,560px)"></div>`;
+  if (!modal.open) modal.showModal();
+  drawTreemap();
+  document.getElementById('tmMode').onclick = e => { const b = e.target.closest('button'); if (b) { state.tm = b.dataset.m; drawTreemap(); } };
+}
+function drawTreemap() {
+  const t = T(), y = state.y;
+  document.querySelectorAll('#tmMode button').forEach(b => b.setAttribute('aria-pressed', b.dataset.m === state.tm));
+  const growthColor = g => { const c = g >= 0 ? t.pal[0] : t.pal[4], k = Math.min(1, Math.abs(g) / (g >= 0 ? .2 : .06)); return echarts.color.lerp(k * .85 + .15, [t.ink3, c]); };
   const leaf = (x, color) => { const m = metric({k:x.id, y, p:null, u:null}); return {name:x.name, value:m.rev, ref:['k', x.id], m, itemStyle:{color: state.tm === 'growth' ? growthColor(m.yoy) : color}}; };
-  const data = ch.map(c => {
-    if (c.key === 'k') return leaf(byId(c.id), c.color);
-    const units = c.key === 'p' ? UNITS.filter(u => u.p === c.id) : [byId(c.id)];
-    const kids = c.key === 'p' ? units.map(u => ({name:u.name, ref:['u', u.id], children:u.products.map(x => leaf(x, c.color)), itemStyle:{color:c.color, borderColor:c.color}})) : units[0].products.map(x => leaf(x, c.color));
-    return {name:c.name, ref:[c.key, c.id], children:kids, itemStyle:{color:c.color}};
-  });
-  legend('legTm', state.tm === 'growth' ? [{name:'Declining', color:t.pal[4]}, {name:'Flat', color:t.ink3}, {name:'Growing (≥ 20%)', color:t.pal[0]}] : ch);
-  const c = chart('cTreemap');
-  c.setOption({...base(), tooltip:{...base().tooltip, formatter: p => { const d = p.data; if (!d) return '';
-      const m = d.m || agg(sel({y, ...(d.ref[0] === 'p' ? {p:d.ref[1], u:null} : {u:d.ref[1]})}));
-      return `<b>${esc(d.name)}</b>` + ttRow(t.accent, 'Revenue', fmt$(p.value)) + (d.m ? ttRow('transparent', 'YoY', fmtD(d.m.yoy)) : '') + ttRow('transparent', 'Market share', fmtP(m.share)) + `<div style="color:${t.ink3};font-size:11px;margin-top:4px">${d.ref[0] === 'k' ? 'Click for profile' : 'Click to zoom in'}</div>`; }},
+  const data = PORT.map(p => { const color = t.pal[p.idx]; return {name:p.name, ref:['p', p.id], itemStyle:{color},
+    children: UNITS.filter(u => u.p === p.id).map(u => ({name:u.name, ref:['u', u.id], itemStyle:{color, borderColor:color}, children:u.products.map(x => leaf(x, color))}))}; });
+  legend('legTm', state.tm === 'growth' ? [{name:'Declining', color:t.pal[4]}, {name:'Flat', color:t.ink3}, {name:'Growing (≥ 20%)', color:t.pal[0]}] : PORT.map(p => ({name:p.name, color:t.pal[p.idx]})));
+  const el = document.getElementById('mTree'); const c = echarts.getInstanceByDom(el) || echarts.init(el);
+  c.off('click');
+  c.setOption({...base(), tooltip:{...base().tooltip, formatter: p => { const d = p.data; if (!d) return ''; return `<b>${esc(d.name)}</b>` + ttRow(t.accent, 'Revenue', fmt$(p.value)) + (d.m ? ttRow('transparent', 'YoY', fmtD(d.m.yoy)) : ''); }},
     series:[{type:'treemap', roam:false, nodeClick:false, breadcrumb:{show:false}, width:'100%', height:'100%', top:0, left:0,
       label:{show:true, color:'#fff', fontFamily:FONT, fontSize:12, fontWeight:600, overflow:'truncate', formatter: p => `${p.name}\n{v|${fmt$(p.value)}${p.data.m ? '  ' + fmtD(p.data.m.yoy, 0) : ''}}`, rich:{v:{fontSize:11, fontWeight:500, color:'rgba(255,255,255,.85)', padding:[3, 0, 0, 0]}}},
       upperLabel:{show:true, height:24, color:'#fff', fontWeight:700, fontSize:12, fontFamily:FONT, formatter: p => `${p.name}   ${fmt$(p.value)}`},
       itemStyle:{borderColor:t.surface, borderRadius:6},
       levels:[{itemStyle:{borderWidth:0, gapWidth:6}, upperLabel:{show:false}}, {itemStyle:{borderWidth:2, gapWidth:2, borderColor:t.surface}, upperLabel:{show:true, color:t.ink, fontSize:13}}, {itemStyle:{borderWidth:2, gapWidth:1}, upperLabel:{show:true, color:'#fff', height:20, fontSize:11, fontWeight:600}}, {itemStyle:{borderWidth:0}}],
       data}]}, true);
-  c.on('click', p => { if (p.data && p.data.ref) drill(p.data.ref[0], p.data.ref[1]); });
-
-  // table
-  const q = document.getElementById('prodSearch').value.toLowerCase();
-  document.getElementById('prodSearch').oninput = () => renderPortfolio();
-  const rows = sortRows(productRows(y).filter(r => r.x.name.toLowerCase().includes(q)), state.prodSort, (r, k) => k === 'name' ? r.x.name : k === 'port' ? byId(r.x.p).name : k === 'margin' ? r.x.margin : r[k]);
+  c.on('click', p => { if (!p.data || !p.data.ref) return; const [k, id] = p.data.ref;
+    if (k === 'k') return openProduct(id);
+    modal.close(); if (k === 'p') { state.p = id; state.u = null; } else { state.p = byId(id).p; state.u = id; } state.pk = null; state.tab = 'portfolio'; render(); });
+}
+function openTable() {
+  disposeModal();
+  document.getElementById('mTitle').textContent = 'All products';
+  document.getElementById('mSub').textContent = `${PRODUCTS.length} products · ${YEARS[state.y]}${state.r ? ' · ' + regShort(state.r) : ''} · click a column to sort, a row for its profile`;
+  document.getElementById('mBody').innerHTML = `<input class="search" id="prodSearch" placeholder="Search products…" style="margin-bottom:10px"><div class="tbl-wrap" style="max-height:62vh"><table id="tProd"></table></div>`;
+  if (!modal.open) modal.showModal();
+  document.getElementById('prodSearch').oninput = drawTable;
+  drawTable();
+}
+function drawTable() {
+  const y = state.y, q = document.getElementById('prodSearch').value.toLowerCase();
+  const rows = sortRows(PRODUCTS.map(x => ({x, ...metric({k:x.id, y, p:null, u:null})})).filter(r => r.x.name.toLowerCase().includes(q)), state.prodSort, (r, k) => k === 'name' ? r.x.name : k === 'port' ? byId(r.x.p).name : k === 'margin' ? r.x.margin : r[k]);
   table('tProd', [
     {k:'name', h:'Product', l:1, f:r => `<span style="display:inline-flex;gap:8px;align-items:center"><i class="dot" style="background:${prodColor(r.x)}"></i>${esc(r.x.name)}</span>`},
     {k:'port', h:'Portfolio', l:1, f:r => esc(byId(r.x.p).name)},
-    {k:'rev', h:'Revenue', f:r => fmt$(r.rev)},
-    {k:'yoy', h:'YoY', f:r => `<span class="${cls(r.yoy)}">${fmtD(r.yoy)}</span>`},
-    {k:'tam', h:'Market size', f:r => fmt$(r.tam)},
-    {k:'share', h:'Share', f:r => fmtP(r.share)},
-    {k:'pen', h:'Penetration', f:r => fmtP(r.pen)},
-    {k:'white', h:'White space', f:r => fmt$(r.white)},
-    {k:'margin', h:'Gross margin', f:r => fmtP(r.x.margin, 0)},
-  ], rows, state.prodSort, s => { state.prodSort = s; renderPortfolio(); }, r => openProduct(r.x.id));
-
-  const all = productRows(y).sort((a, b) => b.rev - a.rev), tot = all.reduce((a, r) => a + r.rev, 0);
-  const top3 = all.slice(0, 3).reduce((a, r) => a + r.rev, 0) / tot;
-  const fast = all.slice().sort((a, b) => b.yoy - a.yoy)[0], slow = all.slice().sort((a, b) => a.yoy - b.yoy)[0];
-  setHeadline(`${all.length} products across ${state.u ? '1 operating unit' : state.p ? UNITS.filter(u => u.p === state.p).length + ' operating units' : PORT.length + ' portfolios'}; the top 3 drive <em>${fmtP(top3, 0)}</em> of revenue.`,
-    `Fastest growing: <b>${esc(fast.x.name)}</b> (${fmtD(fast.yoy)}). Slowest: <b>${esc(slow.x.name)}</b> (${fmtD(slow.yoy)}). Click any block on the map to zoom in.`);
+    {k:'rev', h:'Revenue', f:r => fmt$(r.rev)}, {k:'yoy', h:'YoY', f:r => `<span class="${cls(r.yoy)}">${fmtD(r.yoy)}</span>`},
+    {k:'share', h:'Share', f:r => fmtP(r.share)}, {k:'white', h:'White space', f:r => fmt$(r.white)}, {k:'margin', h:'Margin', f:r => fmtP(r.x.margin, 0)},
+  ], rows, state.prodSort, s => { state.prodSort = s; drawTable(); }, r => openProduct(r.x.id));
 }
+document.getElementById('openMap').onclick = openMap;
+document.getElementById('openTable').onclick = openTable;
 
 let WORLD = null, worldLoading = false;
 function countryRevenue(y) {
@@ -998,35 +1143,40 @@ function renderIntake() {
 const modal = document.getElementById('modal');
 document.getElementById('mClose').onclick = () => modal.close();
 modal.addEventListener('click', e => { if (e.target === modal) modal.close(); });
-modal.addEventListener('close', () => ['mRev', 'mShare'].forEach(id => { const el = document.getElementById(id); if (el) { const c = echarts.getInstanceByDom(el); c && c.dispose(); } }));
+function disposeModal() { ['mRev', 'mShare', 'mTree'].forEach(id => { const el = document.getElementById(id); if (el) { const c = echarts.getInstanceByDom(el); c && c.dispose(); } }); }
+modal.addEventListener('close', disposeModal);
 
-function openProduct(id) {
-  const x = byId(id), t = T(), y = state.y, m = metric({k:id, y, p:null, u:null}), f = focusRows(y).find(r => r.x.id === id) || {};
+function openProduct(id) { openEntity('k', id); }
+function openEntity(key, id) {
+  disposeModal();
+  const t = T(), y = state.y, info = entInfo(key, id, y), m = info.m, F = info.f;
+  const x = id ? byId(id) : {name:'All portfolios'}, f = key === 'k' ? (focusRows(y).find(r => r.x.id === id) || {}) : null;
   document.getElementById('mTitle').textContent = x.name;
-  document.getElementById('mSub').textContent = `${byId(x.p).name} › ${byId(x.u).name} · ${YEARS[y]}${state.r ? ' · ' + regShort(state.r) : ''}`;
+  document.getElementById('mSub').textContent = (key === 'k' ? `${byId(x.p).name} › ${byId(x.u).name}` : key === 'u' ? `Therapy · ${byId(x.p).name}` : key === 'p' ? 'Portfolio' : 'Total company') + ` · ${YEARS[y]}${state.r ? ' · ' + regShort(state.r) : ''}`;
   document.getElementById('mBody').innerHTML = `<div class="mk">
     <div><span>Revenue</span><b>${fmt$(m.rev)}</b><span class="${cls(m.yoy)}">${fmtD(m.yoy)} YoY</span></div>
-    <div><span>Market size</span><b>${fmt$(m.tam)}</b><span>${fmtP(x.tamg)} market CAGR</span></div>
+    <div><span>Market size</span><b>${fmt$(m.tam)}</b><span>${fmtD(info.mk)} market growth</span></div>
     <div><span>Market share</span><b>${fmtP(m.share)}</b><span>Penetration ${fmtP(m.pen)}</span></div>
-    <div><span>White space</span><b>${fmt$(m.white)}</b><span>Gross margin ${fmtP(x.margin, 0)}</span></div>
-    <div><span>Focus score</span><b>${f.score ?? '–'}</b><span>${f.rec || ''}</span></div></div>
+    <div><span>White space</span><b>${fmt$(m.white)}</b><span>Gross margin ${fmtP(info.margin, 0)}</span></div>
+    ${f ? `<div><span>Focus score</span><b>${f.score ?? '–'}</b><span>${f.rec || ''}</span></div>` : ''}</div>
     <div class="grid"><div class="card s7" style="box-shadow:none"><h3>Revenue by region</h3><p class="hint">FY22–FY28 · forecast lighter</p><div class="legend" id="legM"></div><div class="chart short" id="mRev"></div></div>
     <div class="card s5" style="box-shadow:none"><h3>Market share trend</h3><p class="hint">Our revenue ÷ addressable market</p><div class="chart short" id="mShare"></div></div></div>`;
-  modal.showModal();
+  if (!modal.open) modal.showModal();
   const regs = REG.filter(r => !state.r || r.id === state.r).map((r, i) => ({...r, color:t.pal[REG.indexOf(r)]}));
   legend('legM', regs.map(r => ({name:r.short || r.name, color:r.color})));
   const c = echarts.init(document.getElementById('mRev'));
   c.setOption({...base(), tooltip:{...base().tooltip, trigger:'axis', axisPointer:{type:'shadow', shadowStyle:{color:t.grid}}, formatter: ps => `<b>${ps[0].axisValue}</b>` + ps.slice().reverse().map(p => ttRow(regs[p.seriesIndex].color, regs[p.seriesIndex].short || regs[p.seriesIndex].name, fmt$(p.value))).join('')},
     xAxis:{type:'category', data:YEARS, ...axisCommon(t)}, yAxis:{type:'value', ...axisCommon(t), axisLabel:{color:t.ink3, fontSize:11, formatter:v => fmt$(v)}},
-    series: regs.map((r, i) => ({type:'bar', stack:'s', barMaxWidth:36, itemStyle:{borderColor:t.surface, borderWidth:1}, data:YEARS.map((_, yi) => ({value:agg(sel({k:id, r:r.id, y:yi, p:null, u:null})).rev, itemStyle:{color:r.color, opacity:yi >= ACTUAL ? .45 : 1, borderRadius:i === regs.length - 1 ? [4, 4, 0, 0] : 0}}))}))});
+    series: regs.map((r, i) => ({type:'bar', stack:'s', barMaxWidth:36, itemStyle:{borderColor:t.surface, borderWidth:1}, data:YEARS.map((_, yi) => ({value:agg(sel({...F, r:r.id, y:yi})).rev, itemStyle:{color:r.color, opacity:yi >= ACTUAL ? .45 : 1, borderRadius:i === regs.length - 1 ? [4, 4, 0, 0] : 0}}))}))});
   const c2 = echarts.init(document.getElementById('mShare'));
   c2.setOption({...base(), tooltip:{...base().tooltip, trigger:'axis', formatter: ps => `<b>${ps[0].axisValue}</b>` + ttRow(t.accent, 'Share', fmtP(ps[0].value))},
     xAxis:{type:'category', data:YEARS, boundaryGap:false, ...axisCommon(t)}, yAxis:{type:'value', ...axisCommon(t), scale:true, axisLabel:{color:t.ink3, fontSize:11, formatter:v => fmtP(v, 0)}},
-    series:[{type:'line', smooth:.3, data:YEARS.map((_, yi) => agg(sel({k:id, y:yi, p:null, u:null})).share), symbol:'circle', symbolSize:8, lineStyle:{width:2, color:t.accent}, itemStyle:{color:t.accent, borderColor:t.surface, borderWidth:2},
+    series:[{type:'line', smooth:.3, data:YEARS.map((_, yi) => agg(sel({...F, y:yi})).share), symbol:'circle', symbolSize:8, lineStyle:{width:2, color:t.accent}, itemStyle:{color:t.accent, borderColor:t.surface, borderWidth:2},
       areaStyle:{color:new echarts.graphic.LinearGradient(0, 0, 0, 1, [{offset:0, color:t.accent + '30'}, {offset:1, color:t.accent + '00'}])},
       markArea:{silent:true, itemStyle:{color:t.grid}, data:[[{xAxis:'FY26'}, {xAxis:'FY28'}]]}}]});
 }
 function openProject(p) {
+  disposeModal();
   document.getElementById('mTitle').textContent = p.name;
   document.getElementById('mSub').textContent = `${p.id} · ${byId(p.p).name} · ${regName(p.r)} · Sponsor ${p.sponsor}`;
   document.getElementById('mBody').innerHTML = `<div class="stages">${STAGES.map((s, i) => `<div class="${i <= p.si ? 'done' : ''}"></div>`).join('')}</div>
@@ -1038,13 +1188,14 @@ function openProject(p) {
       <div><span>Strategic fit</span><b>${p.fit}/100</b><span>Risk: ${p.risk}</span></div></div>
     <h3 style="margin:8px 0">Gate history</h3>
     <table><thead><tr><th class="l">Gate</th><th>Days</th><th>Target</th><th>Variance</th></tr></thead><tbody>${STAGES.map((s, i) => p.dur[i] != null ? `<tr style="cursor:default"><td class="l">${s}</td><td>${p.dur[i]}</td><td>${TARGET[i]}</td><td class="${p.dur[i] <= TARGET[i] ? 'up' : 'down'}">${p.dur[i] - TARGET[i] > 0 ? '+' : ''}${p.dur[i] - TARGET[i]}d</td></tr>` : '').join('') || '<tr><td class="l" colspan="4">No gates completed yet</td></tr>'}</tbody></table>`;
-  modal.showModal();
+  if (!modal.open) modal.showModal();
 }
 
 /* =========================================================
    6. RENDER, THEME, PRESENT, KEYS
    ========================================================= */
 function render() {
+  document.body.dataset.tab = state.tab;
   renderChrome();
   ({exec:renderExec, overview:renderOverview, portfolio:renderPortfolio, geo:renderGeo, markets:renderMarkets, intake:renderIntake})[state.tab]();
   try { location.hash = state.tab; } catch (e) {}
