@@ -6,6 +6,14 @@ Interactive, presentation-ready portfolio dashboard for a medical-device busines
 
 > All figures are illustrative dummy data.
 
+## Open it on any computer
+1. **Any browser, any computer:** https://aiforheratx.github.io/medtech-portfolio-dashboard/ — no login needed.
+   Everything (chart library + world map) is hosted in this repo, so it works even on networks that block outside script sites.
+2. **No internet / locked-down laptop:** download [`dashboard-offline.html`](https://github.com/aiforheratx/medtech-portfolio-dashboard/raw/main/dashboard-offline.html) (≈2 MB, one file), copy it by email/USB/OneDrive, and double-click to open in Chrome, Edge or Safari.
+3. Seeing an old version? Hard refresh: **Cmd+Shift+R** (Mac) or **Ctrl+F5** (Windows).
+
+After editing `index.html`, run `python3 build_offline.py` to refresh the offline file.
+
 ## Views
 0. **Executive Summary** – one-glance page for VP / CTO: hero revenue, 3 things to know, portfolio health, where we will win, innovation pipeline, decisions needed (glass design)
 1. **Performance Overview** – revenue, vs. plan, market size, share, penetration, white space, pipeline NPV; portfolio cards; trend + forecast; regions
@@ -20,4 +28,4 @@ Interactive, presentation-ready portfolio dashboard for a medical-device busines
 - **Present** (or `P`) for full-screen; `←` / `→` to move between views, `1`–`6` to jump, `Esc` to exit
 - Light/dark toggle; fits any window size
 
-Single static `index.html` (ECharts from CDN) — no build step.
+Static site: `index.html` + `vendor/` (ECharts 5.4.3, Apache-2.0; world map GeoJSON). No server or build step needed.
